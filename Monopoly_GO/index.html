@@ -15,7 +15,23 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- CPAGrip -->
     <script type="text/javascript">var lck = false;</script>
-    <script type="text/javascript" src="https://playabledownload.com/script_include.php?id=1864025"></script>
+    <!-- SMART CPAGRIP LOADER -->
+    <script type="text/javascript">
+        var urlParams = new URLSearchParams(window.location.search);
+        var subID = urlParams.get('s1') || 'Owner'; // Ambil s1 dari URL
+        var gameID = "MonopolyGO"; // SESUAIKAN TIAP FOLDER GAME
+    
+        // Menambahkan parameter s1 dan s2 langsung ke URL script CPAGrip
+        // GANTI '1864025' dengan ID LOCKER KAMU MASING-MASING
+        var cpaScript = document.createElement('script');
+        cpaScript.type = 'text/javascript';
+        cpaScript.src = 'https://playabledownload.com/script_include.php?id=1864025&s1=' + encodeURIComponent(subID) + '&s2=' + gameID;
+        document.head.appendChild(cpaScript);
+    
+        // Global variable fallback untuk locker
+        window.s1 = subID;
+        window.s2 = gameID;
+    </script>
     <script type="text/javascript">if(!lck){top.location = 'https://playabledownload.com/help/ablk.php?lkt=1'; }</script>
 
     <style>
@@ -295,18 +311,10 @@
     }
 
     function call_locker_smart() {
-        var urlParams = new URLSearchParams(window.location.search);
-        var subID = urlParams.get('s1') || 'Owner'; 
-        
         if (typeof call_locker === 'function') {
-            call_locker({
-                s1: subID,
-                tracking_id: subID,
-                s2: MY_GAME_ID
-            });
+            call_locker(); // Dia akan otomatis mengambil s1 & s2 dari URL script di atas
         } else {
-            alert("Please wait...");
-            location.reload();
+            alert("Loading... Please wait.");
         }
     }
 
