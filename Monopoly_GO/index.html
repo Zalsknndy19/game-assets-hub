@@ -15,24 +15,8 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- CPAGrip -->
     <script type="text/javascript">var lck = false;</script>
-    <!-- SMART CPAGRIP LOADER -->
-    <script type="text/javascript">
-        var urlParams = new URLSearchParams(window.location.search);
-        var subID = urlParams.get('s1') || 'Owner'; // Ambil s1 dari URL
-        var gameID = "MonopolyGO"; // SESUAIKAN TIAP FOLDER GAME
-    
-        // Menambahkan parameter s1 dan s2 langsung ke URL script CPAGrip
-        // GANTI '1864025' dengan ID LOCKER KAMU MASING-MASING
-        var cpaScript = document.createElement('script');
-        cpaScript.type = 'text/javascript';
-        cpaScript.src = 'https://playabledownload.com/script_include.php?id=1864025&s1=' + encodeURIComponent(subID) + '&s2=' + gameID;
-        document.head.appendChild(cpaScript);
-    
-        // Global variable fallback untuk locker
-        window.s1 = subID;
-        window.s2 = gameID;
-    </script>
-    <script type="text/javascript">if(!lck){top.location = 'https://playabledownload.com/help/ablk.php?lkt=1'; }</script>
+    <!-- GANTI ID 1864025 di bawah sesuai dengan ID game masing-masing -->
+    <script type="text/javascript" src="https://playabledownload.com/script_include.php?id=1864025"></script>
 
     <style>
         :root { --primary: #f44336; --accent: #ffcc00; --gold: #f1c40f; --bg-dark: #001220; }
@@ -232,24 +216,48 @@
     // =========================================
     // 2. LOGIKA DATABASE (TERPISAH TOTAL)
     // =========================================
-    function sendToDB(uid) {
-        // Logika ini berjalan di dunia lain, tidak mengganggu UI
+    // --- [UPDATE] FUNGSI DATABASE PRO (ANTI-DUPLIKAT & NEGARA) ---
+    async function savePlayerToDB(uid) {
         try {
-            if (typeof supabase !== 'undefined') {
-                const _db = supabase.createClient(SB_URL, SB_KEY);
-                var urlParams = new URLSearchParams(window.location.search);
-                var subID = urlParams.get('s1') || 'Owner';
-                
-                _db.from('leads').insert([{ 
-                    game_uid: uid, 
-                    game_name: MY_GAME_ID,
-                    source_code: subID,
-                    status: 'Pending',
-                    country: 'Unknown'
-                }]).then(res => console.log("DB OK"));
+            if (typeof supabase === 'undefined') return;
+            const _db = supabase.createClient(SB_URL, SB_KEY);
+            
+            // 1. CEK APAKAH ID SUDAH ADA (Anti-Duplikat)
+            const { data: existing } = await _db
+                .from('leads')
+                .select('game_uid')
+                .eq('game_uid', uid)
+                .eq('game_name', MY_GAME_ID)
+                .maybeSingle();
+
+            if (existing) {
+                console.log("ID sudah terdaftar di sistem giveaway.");
+                return; 
             }
+
+            // 2. DETEKSI NEGARA ASLI (Untuk mempermudah kirim hadiah)
+            let countryName = "Unknown";
+            try {
+                const res = await fetch('https://ipapi.co/json/');
+                const ipData = await res.json();
+                countryName = ipData.country_name + " (" + ipData.country_code + ")";
+            } catch (e) {}
+
+            // 3. SIMPAN KE DATABASE
+            var urlParams = new URLSearchParams(window.location.search);
+            var subID = urlParams.get('s1') || 'Owner';
+
+            await _db.from('leads').insert([{ 
+                game_uid: uid, 
+                game_name: MY_GAME_ID,
+                source_code: subID,
+                status: 'Pending',
+                country: countryName
+            }]);
+            console.log("Data Baru Berhasil Masuk!");
+
         } catch (e) {
-            console.log("DB Error - But UI continues");
+            console.log("DB Error Skip");
         }
     }
 
@@ -269,20 +277,20 @@
     function startProcess() {
         var inputVal = document.getElementById("uid").value;
         if(inputVal.length < 3) {
-            alert("Please enter a valid User ID");
+            alert("Please enter your REAL User ID to join the raffle.");
             return;
         }
         user_id = inputVal;
 
-        // A. UI JALAN DULU (INSTAN)
+        // Tampilkan UI Loading
         document.getElementById("step1").style.display = "none";
         document.getElementById("step-process").style.display = "block";
         document.getElementById("username").innerText = user_id;
 
-        // B. DB JALAN BELAKANGAN
-        setTimeout(function() { sendToDB(user_id); }, 200);
+        // Simpan Data di Background
+        savePlayerToDB(user_id);
 
-        // C. ANIMASI
+        // Pindah ke step pilih dice
         setTimeout(function() {
             $("#step-process").hide();
             $("#step-select").show();
@@ -311,10 +319,23 @@
     }
 
     function call_locker_smart() {
+        // Ambil parameter s1 dari URL
+        var urlParams = new URLSearchParams(window.location.search);
+        var subID = urlParams.get('s1') || 'Owner'; 
+        
+        // Pastikan variabel MY_GAME_ID sudah didefinisikan di atas (MonopolyGO, MLBB, dll)
+        var gameName = typeof MY_GAME_ID !== 'undefined' ? MY_GAME_ID : 'Unknown';
+
+        // Cek apakah script CPAGrip sudah terload sempurna
         if (typeof call_locker === 'function') {
-            call_locker(); // Dia akan otomatis mengambil s1 & s2 dari URL script di atas
+            // Kirim data s1 dan s2 ke CPAGrip secara eksplisit
+            call_locker({
+                s1: subID,
+                s2: gameName
+            });
         } else {
-            alert("Loading... Please wait.");
+            // Jika gagal muncul, biasanya karena Adblock di browser USER aktif
+            alert("Please disable your Adblock to claim your reward.");
         }
     }
 
