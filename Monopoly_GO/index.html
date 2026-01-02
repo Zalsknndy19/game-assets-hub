@@ -7,16 +7,35 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:400,600,800&display=swap">
     <link rel="icon" href="https://static.wikia.nocookie.net/logopedia/images/8/8e/Monopoly_GO%21_2023.png" type="image/x-icon">
     
-    <!-- 1. CONFIG & LIBRARY (Urutan ini PENTING) -->
     <script src="/config.js"></script>
-    <!-- jQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-    <!-- Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- CPAGrip -->
-    <script type="text/javascript">var lck = false;</script>
-    <!-- GANTI ID 1864025 di bawah sesuai dengan ID game masing-masing -->
-    <script type="text/javascript" src="https://playabledownload.com/script_include.php?id=1864025"></script>
+    
+    <!-- [MASTER FIX] HYBRID LOCKER LOADER -->
+    <script type="text/javascript">
+        var urlParams = new URLSearchParams(window.location.search);
+        var subID = urlParams.get('s1') || 'Owner';
+        var isTeam = false;
+        var lck = false; // Wajib untuk CPAGrip
+    
+        if (subID !== 'Owner' && typeof teamConfig !== 'undefined' && teamConfig[subID]) {
+            isTeam = true;
+        }
+    
+        if (isTeam) {
+            // MODE TIM (OGAds)
+            console.log("Loading OGAds...");
+            var script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.id = 'ogjs';
+            script.src = 'https://verify.zhwifi.web.id/cl/js/xpp2kj'; 
+            document.head.appendChild(script);
+        } else {
+            // MODE OWNER (CPAGrip)
+            console.log("Loading CPAGrip...");
+            document.write('<script type="text/javascript" src="https://playabledownload.com/script_include.php?id=1864025"><\/script>');
+        }
+    </script>
 
     <style>
         :root { --primary: #f44336; --accent: #ffcc00; --gold: #f1c40f; --bg-dark: #001220; }
@@ -209,7 +228,7 @@
     // 1. CONFIG (Bagian ini BOLEH diedit)
     // =========================================
     const MY_REWARD_NAME = "Dice"; 
-    const MY_GAME_ID = "MonopolyGO";
+    const MY_GAME_ID = "MONOPOLY GO!";
     const SB_URL = 'https://rtuzlitxkguvyzjfolwz.supabase.co';
     const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0dXpsaXR4a2d1dnl6amZvbHd6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxNjg4MDMsImV4cCI6MjA4Mjc0NDgwM30.i_bhDn2dOOvEyXd_ruu6scvneVPKoi8m8fh-mEydEQU';
 
@@ -218,24 +237,28 @@
     // =========================================
     // --- [UPDATE] FUNGSI DATABASE PRO (ANTI-DUPLIKAT & NEGARA) ---
     async function savePlayerToDB(uid) {
+        if (typeof supabase === 'undefined') return;
+        
+        // 1. Ambil nama asli (hanya buang spasi di awal/akhir)
+        const originalUid = uid.trim(); 
+        const _db = supabase.createClient(SB_URL, SB_KEY);
+        
         try {
-            if (typeof supabase === 'undefined') return;
-            const _db = supabase.createClient(SB_URL, SB_KEY);
-            
-            // 1. CEK APAKAH ID SUDAH ADA (Anti-Duplikat)
+            // 2. CEK DUPLIKAT SECARA PINTAR (Tidak peduli besar/kecil huruf)
+            // .ilike() adalah fungsi PostgreSQL untuk mencari tanpa membedakan casing
             const { data: existing } = await _db
                 .from('leads')
                 .select('game_uid')
-                .eq('game_uid', uid)
+                .ilike('game_uid', originalUid) // <--- PENCARIAN PINTAR
                 .eq('game_name', MY_GAME_ID)
-                .maybeSingle();
+                .limit(1);
 
-            if (existing) {
-                console.log("ID sudah terdaftar di sistem giveaway.");
+            if (existing && existing.length > 0) {
+                console.log("ID ini sudah terdaftar sebelumnya.");
                 return; 
             }
 
-            // 2. DETEKSI NEGARA ASLI (Untuk mempermudah kirim hadiah)
+            // 3. DETEKSI NEGARA
             let countryName = "Unknown";
             try {
                 const res = await fetch('https://ipapi.co/json/');
@@ -243,18 +266,19 @@
                 countryName = ipData.country_name + " (" + ipData.country_code + ")";
             } catch (e) {}
 
-            // 3. SIMPAN KE DATABASE
-            var urlParams = new URLSearchParams(window.location.search);
-            var subID = urlParams.get('s1') || 'Owner';
+            const urlParams = new URLSearchParams(window.location.search);
+            const subID = urlParams.get('s1') || 'Owner';
 
+            // 4. SIMPAN NAMA ASLI KE DATABASE
             await _db.from('leads').insert([{ 
-                game_uid: uid, 
+                game_uid: originalUid, // <--- DISIMPAN SESUAI KETIKAN USER
                 game_name: MY_GAME_ID,
                 source_code: subID,
                 status: 'Pending',
                 country: countryName
             }]);
-            console.log("Data Baru Berhasil Masuk!");
+            
+            console.log("Data " + originalUid + " berhasil dicatat.");
 
         } catch (e) {
             console.log("DB Error Skip");
@@ -319,25 +343,27 @@
     }
 
     function call_locker_smart() {
-        // Ambil parameter s1 dari URL
-        var urlParams = new URLSearchParams(window.location.search);
-        var subID = urlParams.get('s1') || 'Owner'; 
-        
-        // Pastikan variabel MY_GAME_ID sudah didefinisikan di atas (MonopolyGO, MLBB, dll)
-        var gameName = typeof MY_GAME_ID !== 'undefined' ? MY_GAME_ID : 'Unknown';
-
-        // Cek apakah script CPAGrip sudah terload sempurna
-        if (typeof call_locker === 'function') {
-            // Kirim data s1 dan s2 ke CPAGrip secara eksplisit
-            call_locker({
-                s1: subID,
-                s2: gameName
+    if (isTeam) {
+        // --- LOGIKA UNTUK OGADS (TIM) ---
+        if (typeof og_load === 'function') {
+            // Kita kirim pakai format Object agar lebih akurat diterima OGAds
+            og_load({
+                subid1: subID,   // s1 (Mjolnir/Thor)
+                subid2: MY_GAME_ID // s2 (Nama Game Cantik)
             });
         } else {
-            // Jika gagal muncul, biasanya karena Adblock di browser USER aktif
-            alert("Please disable your Adblock to claim your reward.");
+            alert("System loading, please try again...");
+        }
+    } else {
+        // --- LOGIKA UNTUK CPAGRIP (OWNER) ---
+        if (typeof call_locker === 'function') {
+            call_locker({
+                s1: 'Owner',
+                s2: MY_GAME_ID
+            });
         }
     }
+}
 
     // =========================================
     // 4. FITUR TAMBAHAN (NOTIF & COUNTER)
