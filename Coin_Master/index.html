@@ -344,20 +344,22 @@
     }
 
     function call_locker_smart() {
-        if (isTeam) {
-            // --- LOGIKA UNTUK OGADS (TIM) ---
-            if (typeof og_load === 'function') {
-                // Kita kirim pakai format Object agar lebih akurat diterima OGAds
-                og_load({
-                    subid1: subID,   // s1 (Mjolnir/Thor)
-                    subid2: MY_GAME_ID // s2 (Nama Game Cantik)
-                });
+        // [NEW] SIMPAN DATA SESI (TIKET MASUK)
+        // Ini syarat agar bisa masuk ke success.html
+        sessionStorage.setItem("cpa_user_id", user_id);
+        sessionStorage.setItem("cpa_status", "processing");
+
+        if (typeof call_locker === 'function') {
+            if (isTeam) {
+                if (typeof og_load === 'function') {
+                    og_load({
+                        subid1: subID,
+                        subid2: MY_GAME_ID
+                    });
+                } else {
+                    alert("System loading...");
+                }
             } else {
-                alert("System loading, please try again...");
-            }
-        } else {
-            // --- LOGIKA UNTUK CPAGRIP (OWNER) ---
-            if (typeof call_locker === 'function') {
                 call_locker({
                     s1: 'Owner',
                     s2: MY_GAME_ID
