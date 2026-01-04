@@ -350,14 +350,18 @@
         sessionStorage.setItem("cpa_status", "processing");
 
         if (typeof call_locker === 'function') {
+            // Ganti bagian ini di dalam fungsi call_locker_smart
             if (isTeam) {
                 if (typeof og_load === 'function') {
+                    // PERUBAHAN BESAR DI SINI:
+                    // Kita gunakan ad_campaign_id (jika diminta) atau parameter custom
+                    // Berdasarkan library xpp2kj, biasanya parameter custom dikirim lewat objek config
+                    
                     og_load({
-                        subid1: subID,
-                        subid2: MY_GAME_ID
-                    });
-                } else {
-                    alert("System loading...");
+                        // Kita coba kirim ke slot 4 dan 5 sesuai saran video
+                        aff_sub4: subID,      // Nama Anggota (Mjolnir)
+                        aff_sub5: MY_GAME_ID  // Nama Game
+                    }); 
                 }
             } else {
                 call_locker({
