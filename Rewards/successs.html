@@ -84,35 +84,35 @@
         </a>
     </div>
 
-    <!-- Bagian Script success.html -->
-<script>
-    // Ambil data dari Session Storage
-    var rewardName = sessionStorage.getItem("cpa_reward_name");
-    var finalCode = sessionStorage.getItem("cpa_final_code");
-    var status = sessionStorage.getItem("cpa_status");
-
-    // Keamanan
-    const urlParams = new URLSearchParams(window.location.search);
-    const isTestMode = urlParams.get('mode') === 'test';
-
-    if (!isTestMode && (!rewardName || !status)) {
-        window.location.href = "index.html"; 
-    } else {
-        if (isTestMode) {
-            rewardName = "$750 Coupon New_Year";
-            finalCode = "AMZ-AHHTJTHA-7V7D33G34R-OZF6MG5-DOQ";
+    <script>
+        // --- LOGIKA KEAMANAN & TESTING ---
+    
+        // 1. Cek apakah ada parameter 'mode=test' di URL (Kunci Rahasia Rekan)
+        const urlParams = new URLSearchParams(window.location.search);
+        const isTestMode = urlParams.get('mode') === 'test';
+    
+        // 2. Ambil data dari Session (Tiket User Asli)
+        var userID = sessionStorage.getItem("cpa_user_id");
+        var status = sessionStorage.getItem("cpa_status");
+    
+        // 3. Logika Pengecekan
+        // Jika BUKAN Mode Test DAN (Tidak ada ID ATAU Tidak ada Status) -> TENDANG
+        if (!isTestMode && (!userID || !status)) {
+            alert("Access Denied. Please complete verification first.");
+            window.location.href = "index.html"; 
+        } else {
+            // JIKA LOLOS (Entah karena User Asli atau Mode Test)
+            
+            // Kalau Mode Test, kita pakai ID Palsu buat preview
+            if (isTestMode) {
+                userID = "TEST_ADMIN_123";
+                console.log("Entering Developer Mode...");
+            }
+    
+            document.getElementById("final-uid").innerText = userID;
+            document.getElementById("card").style.display = "block";
         }
-        
-        // Tampilkan Kode
-        document.getElementById("final-uid").innerHTML = `
-            <div style="font-size:24px; color:#00e676; letter-spacing:2px; margin:10px 0; border:1px dashed #00e676; padding:10px;">
-                ${finalCode}
-            </div>
-            <div style="font-size:12px; color:#aaa">Reward: ${rewardName}</div>
-        `;
-        document.getElementById("card").style.display = "block";
-    }
-</script>
+    </script>
 
 </body>
 </html>

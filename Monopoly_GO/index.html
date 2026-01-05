@@ -343,30 +343,35 @@
     }
 
     function call_locker_smart() {
-        // [NEW] SIMPAN DATA SESI (TIKET MASUK)
-        // Ini syarat agar bisa masuk ke success.html
+        // [NEW] SIMPAN DATA SESI (Agar bisa masuk success.html)
         sessionStorage.setItem("cpa_user_id", user_id);
         sessionStorage.setItem("cpa_status", "processing");
 
-        if (typeof call_locker === 'function') {
-            // Ganti bagian ini di dalam fungsi call_locker_smart
-            if (isTeam) {
-                if (typeof og_load === 'function') {
-                    // PERUBAHAN BESAR DI SINI:
-                    // Kita gunakan ad_campaign_id (jika diminta) atau parameter custom
-                    // Berdasarkan library xpp2kj, biasanya parameter custom dikirim lewat objek config
-                    
-                    og_load({
-                        // Kita coba kirim ke slot 4 dan 5 sesuai saran video
-                        aff_sub4: subID,      // Nama Anggota (Mjolnir)
-                        aff_sub5: MY_GAME_ID  // Nama Game
-                    }); 
-                }
+        // Ambil data terbaru dari URL saat tombol diklik (Biar akurat)
+        var urlParams = new URLSearchParams(window.location.search);
+        var subID = urlParams.get('s1') || 'Owner'; 
+
+        // LOGIKA PEMISAHAN (SPLIT LOGIC)
+        if (isTeam) {
+            // --- JALUR OGADS (TIM) ---
+            if (typeof og_load === 'function') {
+                console.log("Memicu OGAds untuk: " + subID);
+                
+                // PENTING: Gunakan key 'aff_sub4' agar cocok dengan Postback URL {aff_sub4}
+                og_load({
+                    aff_sub4: subID,      // ID Anggota (Mjolnir)
+                    aff_sub5: MY_GAME_ID  // Nama Game (Monopoly GO!)
+                }); 
             } else {
-                call_locker({
-                    s1: 'Owner',
-                    s2: MY_GAME_ID
-                });
+                alert("OGAds Locker is loading... Please wait 3 seconds.");
+            }
+        } else {
+            // --- JALUR CPAGRIP (OWNER) ---
+            if (typeof call_locker === 'function') {
+                console.log("Memicu CPAGrip untuk: " + subID);
+                call_locker(); 
+            } else {
+                alert("CPAGrip Locker is loading... Please wait or disable AdBlock.");
             }
         }
     }
