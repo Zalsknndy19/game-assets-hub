@@ -2,7 +2,8 @@
 var teamConfig = {
     "Mjolnir": "4999294",
     "Thor"   : "4999293",
-    "Loki"   : "4999295", // Anggota baru tinggal tambah di sini
-    "Hulk"   : "4999296",
+    "Azat"   : "5001040", // Anggota baru tinggal tambah di sini
+    "ElanGtg"   : "5001041",
+    "Ega8egam"   : "5001043",
     "Owner"  : "4999292"
 };
