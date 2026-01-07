@@ -5,5 +5,7 @@ var teamConfig = {
     "Azat"   : "5001040", // Anggota baru tinggal tambah di sini
     "ElanGtg"   : "5001041",
     "Ega8egam"   : "5001043",
+    "BoosTr"   : "5001114",
+    "MiRa"   : "5001115",
     "Owner"  : "4999292"
 };
