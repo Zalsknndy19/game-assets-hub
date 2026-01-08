@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaksi Berhasil - Kode Voucher</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:400,600,800&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        /* TEMA: RESI PEMBAYARAN DIGITAL */
+        :root { --bg: #f1f5f9; --card: #ffffff; --text: #1e293b; --green: #22c55e; --red: #e63946; }
+        body { margin: 0; font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--text); display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
+        
+        .receipt-card {
+            background: var(--card);
+            padding: 30px 20px;
+            border-radius: 20px;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border-top: 5px solid var(--green);
+        }
+
+        /* Hiasan Gerigi Kertas di Bawah (Opsional Visual) */
+        .receipt-card::after {
+            content: ""; position: absolute; bottom: -10px; left: 0; right: 0; height: 20px;
+            background: linear-gradient(135deg, transparent 50%, var(--bg) 50%), linear-gradient(45deg, var(--bg) 50%, transparent 50%);
+            background-size: 20px 20px;
+        }
+
+        .icon-box {
+            width: 70px; height: 70px; background: #dcfce7; border-radius: 50%; color: var(--green);
+            display: flex; align-items: center; justify-content: center; font-size: 35px; margin: 0 auto 15px;
+        }
+
+        h1 { font-size: 20px; margin: 0; color: #333; font-weight: 800; }
+        .subtitle { font-size: 12px; color: #64748b; margin-bottom: 20px; }
+
+        .voucher-container {
+            background: #f8fafc;
+            border: 2px dashed #cbd5e1;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .voucher-code {
+            font-family: 'Courier New', monospace;
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            letter-spacing: 2px;
+            word-break: break-all;
+        }
+
+        .label { font-size: 10px; text-transform: uppercase; color: #94a3b8; letter-spacing: 1px; margin-bottom: 5px; display: block; }
+
+        .instruction { font-size: 12px; color: #475569; background: #e0f2fe; padding: 10px; border-radius: 8px; margin-top: 20px; }
+        .instruction b { color: #0284c7; }
+
+        .btn-copy {
+            background: var(--green); color: white; border: none; padding: 12px; width: 100%;
+            border-radius: 10px; font-weight: bold; margin-top: 15px; cursor: pointer; font-size: 14px;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .btn-copy:active { transform: scale(0.98); }
+    </style>
+</head>
+<body>
+
+    <div class="receipt-card" id="card">
+        <div class="icon-check">
+            <div class="icon-box"><i class="fa-solid fa-check"></i></div>
+        </div>
+        <h1>Verifikasi Sukses!</h1>
+        <p class="subtitle">Hadiah Anda telah berhasil dicairkan.</p>
+        
+        <div class="voucher-container">
+            <span class="label">KODE VOUCHER / SN</span>
+            <div class="voucher-code" id="final-code">Loading...</div>
+        </div>
+
+        <div class="instruction">
+            <i class="fa-solid fa-circle-info"></i> 
+            Cara Pakai: <span id="usage-text">Salin kode di atas dan masukkan ke menu Redeem.</span>
+        </div>
+
+        <button onclick="copyCode()" class="btn-copy">
+            <i class="fa-regular fa-copy"></i> SALIN KODE
+        </button>
+
+        <p style="margin-top:20px; font-size:10px; color:#aaa;">ID Transaksi: #TRX-<span id="trx-id"></span></p>
+    </div>
+
+    <script>
+        // --- LOGIKA KEAMANAN ---
+        const urlParams = new URLSearchParams(window.location.search);
+        const isTestMode = urlParams.get('mode') === 'test';
+        var status = sessionStorage.getItem("cpa_status");
+
+        if (!isTestMode && !status) {
+            // Tendang balik jika nyasar
+            window.location.href = "index.html"; 
+        } else {
+            generateCode();
+        }
+
+        function generateCode() {
+        // Kita butuh tahu provider apa yang dipilih user sebelumnya
+        // (Idealnya disimpan di SessionStorage saat di index.html)
+        // Tapi untuk simpelnya, kita buat random angka saja karena 
+        // 16 digit angka terlihat valid untuk voucher fisik apa pun.
+        
+        let part1 = Math.floor(1000 + Math.random() * 9000);
+        let part2 = Math.floor(1000 + Math.random() * 9000);
+        let part3 = Math.floor(1000 + Math.random() * 9000);
+        let part4 = Math.floor(1000 + Math.random() * 9000);
+        
+        let finalCode = `${part1}-${part2}-${part3}-${part4}`;
+        
+        // Hapus tanda strip (-) jika user memilih Pulsa (Opsional, tapi lebih rapi)
+        // finalCode = finalCode.replace(/-/g, ''); 
+        
+        document.getElementById("final-code").innerText = finalCode;
+        document.getElementById("trx-id").innerText = Math.floor(Math.random() * 999999999);
+        
+        document.getElementById("usage-text").innerHTML = "Masukkan kode <b>" + finalCode + "</b> pada menu Redeem/Dial.";
+    }
+
+        function copyCode() {
+            var codeText = document.getElementById("final-code").innerText;
+            navigator.clipboard.writeText(codeText);
+            alert("Kode berhasil disalin!");
+        }
+    </script>
+
+</body>
+</html>
