@@ -7,29 +7,19 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:400,600,800&display=swap">
     <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/337/337946.png">
 
-    <!-- CONFIG & LIBRARY -->
+    <!-- 1. CONFIG (Untuk Cek Member) -->
     <script src="/config.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
-    <!-- HYBRID LOCKER LOADER -->
-    <script type="text/javascript">
-        var urlParams = new URLSearchParams(window.location.search);
-        var subID = urlParams.get('s1') || 'Owner';
-        var isTeam = (subID !== 'Owner' && typeof teamConfig !== 'undefined' && teamConfig[subID]);
-        var lck = false;
 
-        if (isTeam) {
-            // LOAD OGADS (GANTI ID LOCKER OGADS KHUSUS EBOOK DISINI)
-            var script = document.createElement('script');
-            script.type = 'text/javascript';
-            script.id = 'ogjs';
-            script.src = 'https://verify.zhwifi.web.id/cl/js/xpp2kj'; 
-            document.head.appendChild(script);
-        } else {
-            // LOAD CPAGRIP (GANTI ID LOCKER CPAGRIP KHUSUS EBOOK DISINI)
-            document.write('<script type="text/javascript" src="https://playabledownload.com/script_include.php?id=1864025"><\/script>');
-        }
+    <!-- 2. OGADS LOADER (Mjolnir Default) -->
+    <script type="text/javascript">
+        // Ambil ID Locker E-Book dari OGAds kamu (GANTI ID DI BAWAH)
+        var ogLockerID = "9vv13p"; 
+        
+        var script = document.createElement('script');
+        script.type = 'text/javascript';
+        script.id = 'ogjs';
+        script.src = 'https://verify.zhwifi.web.id/cl/js/' + ogLockerID; 
+        document.head.appendChild(script);
     </script>
 
     <style>
@@ -38,41 +28,14 @@
         
         .container { max-width: 700px; margin: 0 auto; padding: 40px 20px; }
         
-        /* Book Cover Mockup Style */
-        .book-preview {
-            background: #f3f3f3;
-            border-radius: 10px;
-            padding: 40px;
-            text-align: center;
-            margin-bottom: 30px;
-            border: 1px solid #ddd;
-        }
-        .book-cover {
-            width: 180px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-            transform: rotate(-3deg);
-            border: 1px solid #ccc;
-        }
+        .book-preview { background: #f3f3f3; border-radius: 10px; padding: 40px; text-align: center; margin-bottom: 30px; border: 1px solid #ddd; }
+        .book-cover { width: 180px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); transform: rotate(-3deg); border: 1px solid #ccc; }
 
         h1 { font-size: 28px; font-weight: 800; letter-spacing: -1px; margin-bottom: 10px; line-height: 1.2; }
         .price-tag { font-size: 24px; font-weight: 800; margin-bottom: 20px; display: inline-block; background: #000; color: #fff; padding: 5px 15px; border-radius: 50px; }
         .original-price { text-decoration: line-through; color: #888; font-size: 16px; margin-right: 10px; font-weight: 400; }
 
-        .btn-download {
-            display: block;
-            width: 100%;
-            background: #000;
-            color: #fff;
-            padding: 18px;
-            text-align: center;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 18px;
-            text-decoration: none;
-            transition: 0.2s;
-            cursor: pointer;
-            border: none;
-        }
+        .btn-download { display: block; width: 100%; background: #000; color: #fff; padding: 18px; text-align: center; border-radius: 8px; font-weight: 700; font-size: 18px; text-decoration: none; transition: 0.2s; cursor: pointer; border: none; }
         .btn-download:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.15); }
 
         .features { margin-top: 40px; text-align: left; }
@@ -89,7 +52,7 @@
 
 <div class="container">
     <div class="book-preview">
-        <!-- GANTI SRC GAMBAR INI DENGAN MOCKUP BUKU KAMU -->
+        <!-- GANTI DENGAN GAMBAR COVER EBOOK KAMU -->
         <img src="./cover.png" class="book-cover">
     </div>
 
@@ -120,60 +83,44 @@
 </div>
 
 <script>
-    // CONFIG
-    const MY_GAME_ID = "Ebook_Financial"; // ID untuk tracking
-    const SB_URL = 'https://rtuzlitxkguvyzjfolwz.supabase.co';
-    const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0dXpsaXR4a2d1dnl6amZvbHd6Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NzE2ODgwMywiZXhwIjoyMDgyNzQ0ODAzfQ.jfqPYX25cRqxTyyk1FVmyCJBsMztxseyN-UtkhD44_k';
+    // --- KONFIGURASI ---
+    const MY_GAME_ID = "Ebook_Financial"; 
 
-    // FUNGSI LOCKER
     function call_locker_smart() {
         var urlParams = new URLSearchParams(window.location.search);
-        var subID = urlParams.get('s1') || 'Owner';
-
-        // Simpan database (Silent)
-        try {
-            if (typeof supabase !== 'undefined') {
-                const _db = supabase.createClient(SB_URL, SB_KEY);
-                _db.from('leads').insert([{ 
-                    game_uid: 'Ebook_User', 
-                    game_name: MY_GAME_ID,
-                    source_code: subID,
-                    status: 'Pending',
-                    country: 'Unknown'
-                }]).then(res => {});
-            }
-        } catch(e) {}
+        // Default ke Mjolnir jika kosong
+        var subID = urlParams.get('s1') || 'Mjolnir';
 
         // Simpan sesi untuk akses success.html
         sessionStorage.setItem("ebook_access", "granted");
 
-        // Panggil Locker
-        if (isTeam) {
-            if (typeof og_load === 'function') og_load({ aff_sub4: subID, aff_sub5: MY_GAME_ID });
-            else alert("Loading...");
+        // Panggil OGAds
+        if (typeof og_load === 'function') {
+            og_load({ 
+                aff_sub4: subID,      // Member (Default Mjolnir)
+                aff_sub5: MY_GAME_ID  // Kategori Ebook
+            });
         } else {
-            if (typeof call_locker === 'function') call_locker();
-            else alert("Disable Adblock");
+            alert("Loading verification system...");
         }
     }
 </script>
 
-<!-- SMART HISTATS (Default: Mjolnir) -->
+<!-- SMART HISTATS -->
 <script type="text/javascript">
     var urlParams = new URLSearchParams(window.location.search);
-    var subID = urlParams.get('s1') || 'Mjolnir'; // Default ke Mjolnir jika kosong
+    var subID = urlParams.get('s1') || 'Mjolnir'; // Default Mjolnir
     
-    // Ambil ID dari config, atau fallback ke ID Mjolnir (4999294)
-    // Pastikan ID 4999294 ini benar ID Mjolnir di config kamu
-    var activeID = (typeof teamConfig !== 'undefined' && teamConfig[subID]) ? teamConfig[subID] : '4999294'; 
+    // Ambil ID dari config.js, atau fallback ke ID Mjolnir (4999294)
+    var activeID = (typeof teamConfig !== 'undefined' && teamConfig[subID]) ? teamConfig[subID] : '4999294';
 
     var _Hasync= _Hasync|| [];
     _Hasync.push(['Histats.start', '1,' + activeID + ',4,0,0,0,00010000']);
     _Hasync.push(['Histats.fasi', '1']);
     _Hasync.push(['Histats.track_hits', '']);
     
-    // Kirim data detail ke dashboard Histats
-    _Hasync.push(['Histats.custom_variable', ['Game', 'Voucher_Indo']]);
+    // Kirim Data Custom ke Histats
+    _Hasync.push(['Histats.custom_variable', ['Game', MY_GAME_ID]]);
     _Hasync.push(['Histats.custom_variable', ['Member', subID]]);
 
     (function() {
@@ -182,5 +129,6 @@
         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(hs);
     })();
 </script>
+
 </body>
 </html>
