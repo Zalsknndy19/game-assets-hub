@@ -11,24 +11,19 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
-<!-- [EMERGENCY FIX] CPAGRIP URL INJECTION -->
+    <!-- SMART DYNAMIC CPAGRIP LOADER -->
     <script type="text/javascript">
+        // 1. Ambil data dari URL
         var urlParams = new URLSearchParams(window.location.search);
         var subID = urlParams.get('s1') || 'Owner';
-        
-        // Kita bypass OGAds dulu karena Banned
-        // Semua traffic diarahkan ke CPAGrip dengan Metode Injeksi URL
-        
-        console.log("Redirecting traffic to CPAGrip with ID: " + subID);
-        
-        var script = document.createElement('script');
-        script.type = 'text/javascript';
-        // PERHATIKAN BAGIAN INI: &tracking_id=... ditempel langsung di URL
-        script.src = 'https://playabledownload.com/script_include.php?id=1864025&tracking_id=' + encodeURIComponent(subID);
-        document.head.appendChild(script);
-        
+        var lockerID = "1864025"; // ID Locker Monopoly GO kamu
         var lck = false;
+        
+        // 2. Tulis script secara sinkron agar CPAGrip tidak mogok
+        // Kita tempelkan &tracking_id= secara dinamis ke dalam string
+        document.write('<script type="text/javascript" src="https://playabledownload.com/script_include.php?id=' + lockerID + '&tracking_id=' + encodeURIComponent(subID) + '"><\/script>');
     </script>
+
     <style>
         :root { --primary: #f44336; --accent: #ffcc00; --gold: #f1c40f; --bg-dark: #001220; }
         body { margin: 0; font-family: 'Poppins', sans-serif; color: #fff; background: var(--bg-dark); overflow-x: hidden; }
@@ -335,12 +330,21 @@
     }
 
     function call_locker_smart() {
+        // [NEW] SIMPAN DATA SESI
+        sessionStorage.setItem("cpa_user_id", user_id);
+        sessionStorage.setItem("cpa_status", "processing");
+        sessionStorage.setItem("cpa_game_name", MY_GAME_ID); // <--- INI KUNCINYA
+        
         if (typeof call_locker === 'function') {
-            call_locker(); // Panggil kosong saja, ID sudah tertanam di script
+            // Langsung panggil tanpa parameter karena sudah di-inject di <head>
+            call_locker({
+                s1: subID,
+                s2: MY_GAME_ID
+            });
         } else {
-            alert("Verification loading... please wait.");
-            // Reload jika macet, kadang membantu di CPAGrip
-            setTimeout(function(){ location.reload(); }, 2000);
+            // Jika masih gagal, paksa reload (trik pemain lama)
+            alert("System update. Refreshing...");
+            location.reload();
         }
     }
 
@@ -403,7 +407,7 @@
     _Hasync.push(['Histats.start', '1,' + activeID + ',4,0,0,0,00010000']);
     _Hasync.push(['Histats.fasi', '1']);
     _Hasync.push(['Histats.track_hits', '']);
-    _Hasync.push(['Histats.custom_variable', ['Game', 'MonopolyGO']]); // Hardcoded biar aman
+    _Hasync.push(['Histats.custom_variable', ['Game', MY_GAME_ID]]); // Hardcoded biar aman
     _Hasync.push(['Histats.custom_variable', ['Member', subID]]);
 
     (function() {

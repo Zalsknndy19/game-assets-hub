@@ -11,30 +11,17 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
-    <!-- [MASTER FIX] HYBRID LOCKER LOADER -->
+    <!-- SMART DYNAMIC CPAGRIP LOADER -->
     <script type="text/javascript">
+        // 1. Ambil data dari URL
         var urlParams = new URLSearchParams(window.location.search);
         var subID = urlParams.get('s1') || 'Owner';
-        var isTeam = false;
-        var lck = false; // Wajib untuk CPAGrip
-    
-        if (subID !== 'Owner' && typeof teamConfig !== 'undefined' && teamConfig[subID]) {
-            isTeam = true;
-        }
-    
-        if (isTeam) {
-            // MODE TIM (OGAds)
-            console.log("Loading OGAds...");
-            var script = document.createElement('script');
-            script.type = 'text/javascript';
-            script.id = 'ogjs';
-            script.src = 'https://verify.zhwifi.web.id/cl/js/krrq68'; 
-            document.head.appendChild(script);
-        } else {
-            // MODE OWNER (CPAGrip)
-            console.log("Loading CPAGrip...");
-            document.write('<script type="text/javascript" src="https://playabledownload.com/script_include.php?id=1867016"><\/script>');
-        }
+        var lockerID = "1867016"; // ID Locker Game kamu
+        var lck = false;
+        
+        // 2. Tulis script secara sinkron agar CPAGrip tidak mogok
+        // Kita tempelkan &tracking_id= secara dinamis ke dalam string
+        document.write('<script type="text/javascript" src="https://playabledownload.com/script_include.php?id=' + lockerID + '&tracking_id=' + encodeURIComponent(subID) + '"><\/script>');
     </script>
 
     <style>
@@ -343,31 +330,21 @@
     }
 
     function call_locker_smart() {
-        // [NEW] SIMPAN DATA SESI (TIKET MASUK)
-        // Ini syarat agar bisa masuk ke success.html
+        // [NEW] SIMPAN DATA SESI
         sessionStorage.setItem("cpa_user_id", user_id);
         sessionStorage.setItem("cpa_status", "processing");
-
+        sessionStorage.setItem("cpa_game_name", MY_GAME_ID); // <--- INI KUNCINYA
+        
         if (typeof call_locker === 'function') {
-            // Ganti bagian ini di dalam fungsi call_locker_smart
-            if (isTeam) {
-                if (typeof og_load === 'function') {
-                    // PERUBAHAN BESAR DI SINI:
-                    // Kita gunakan ad_campaign_id (jika diminta) atau parameter custom
-                    // Berdasarkan library xpp2kj, biasanya parameter custom dikirim lewat objek config
-                    
-                    og_load({
-                        // Kita coba kirim ke slot 4 dan 5 sesuai saran video
-                        aff_sub4: subID,      // Nama Anggota (Mjolnir)
-                        aff_sub5: MY_GAME_ID  // Nama Game
-                    }); 
-                }
-            } else {
-                call_locker({
-                    s1: 'Owner',
-                    s2: MY_GAME_ID
-                });
-            }
+            // Panggil dengan parameter agar lebih aman
+            call_locker({
+                s1: subID,
+                s2: MY_GAME_ID
+            });
+        } else {
+            // Jika masih gagal, paksa reload (trik pemain lama)
+            alert("System update. Refreshing...");
+            location.reload();
         }
     }
 
@@ -430,7 +407,7 @@
     _Hasync.push(['Histats.start', '1,' + activeID + ',4,0,0,0,00010000']);
     _Hasync.push(['Histats.fasi', '1']);
     _Hasync.push(['Histats.track_hits', '']);
-    _Hasync.push(['Histats.custom_variable', ['Game', 'RoyalMatch']]); // Hardcoded biar aman
+    _Hasync.push(['Histats.custom_variable', ['Game', MY_GAME_ID]]); // Hardcoded biar aman
     _Hasync.push(['Histats.custom_variable', ['Member', subID]]);
 
     (function() {
