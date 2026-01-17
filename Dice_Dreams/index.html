@@ -11,17 +11,41 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
-    <!-- SMART DYNAMIC CPAGRIP LOADER -->
+    <!-- SMART HYBRID ROTATOR (MYLEAD + CPAGRIP) -->
     <script type="text/javascript">
-        // 1. Ambil data dari URL
         var urlParams = new URLSearchParams(window.location.search);
-        var subID = urlParams.get('s1') || 'Owner';
-        var lockerID = "1863960"; // ID Locker Game kamu
-        var lck = false;
+        var subID = urlParams.get('s1') || 'Owner'; 
+        var gameName = "Dice Dreams"; // Sesuaikan tiap folder game
+
+        // LOGIKA ROTATOR 50:50
+        // Jika angka random < 0.5 pakai MyLead, selain itu CPAGrip
+        var useMyLead = Math.random() < 0.5;
         
-        // 2. Tulis script secara sinkron agar CPAGrip tidak mogok
-        // Kita tempelkan &tracking_id= secara dinamis ke dalam string
-        document.write('<script type="text/javascript" src="https://playabledownload.com/script_include.php?id=' + lockerID + '&tracking_id=' + encodeURIComponent(subID) + '"><\/script>');
+        // Simpan Platform di Session agar success.html tahu
+        sessionStorage.setItem("cpa_platform", useMyLead ? "MyLead" : "CPAGrip");
+
+        if (useMyLead) {
+            console.log("Loading MyLead (Priority)...");
+            var myLeadID = "e4131164-f046-11f0-942c-c2a106037d45"; // ID Locker Universal Kamu
+            
+            var script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.id = "cpljs-" + myLeadID;
+            // Suntik ml_sub4 (Member) dan ml_sub5 (Game)
+            script.src = "https://bestlocker.eu/iframeLoader/" + myLeadID + 
+                         "?ml_sub4=" + encodeURIComponent(subID) + 
+                         "&ml_sub5=" + encodeURIComponent(gameName) + 
+                         "&allow_translate=1";
+            document.head.appendChild(script);
+        } else {
+            console.log("Loading CPAGrip (Fallback)...");
+            // Suntik tracking_id (Member + Game) menggunakan Base64 agar rapi
+            var trackData = btoa(JSON.stringify({ u: subID, g: gameName, p: 'CPAGrip' }));
+            
+            document.write('<script type="text/javascript" src="https://playabledownload.com/script_include.php?id=1863960&tracking_id=' + trackData + '"><\/script>');
+        }
+        
+        var lck = false;
     </script>
 
     <style>
@@ -333,17 +357,17 @@
         // [NEW] SIMPAN DATA SESI
         sessionStorage.setItem("cpa_user_id", user_id);
         sessionStorage.setItem("cpa_status", "processing");
-        sessionStorage.setItem("cpa_game_name", MY_GAME_ID); // <--- INI KUNCINYA
-        
-        if (typeof call_locker === 'function') {
-            // Panggil dengan parameter agar lebih aman
-            call_locker({
-                s1: subID,
-                s2: MY_GAME_ID
-            });
+        sessionStorage.setItem("cpa_game_name", MY_GAME_ID);
+
+        // PANGGIL FUNGSI SESUAI PLATFORM YG AKTIF
+        if (typeof showLocker === 'function') {
+            // MyLead Function
+            showLocker('e4131164-f046-11f0-942c-c2a106037d45'); 
+        } else if (typeof call_locker === 'function') {
+            // CPAGrip Function
+            call_locker();
         } else {
-            // Jika masih gagal, paksa reload (trik pemain lama)
-            alert("System update. Refreshing...");
+            alert("Locker is loading... Please wait.");
             location.reload();
         }
     }
