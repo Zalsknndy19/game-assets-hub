@@ -1,6 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script type="text/javascript">
+        (function() {
+            var officialDomain = "event.zhwifi.web.id";
+            // Tambahkan semua domain lokal kamu di sini agar tidak kena redirect
+            var whitelist = [officialDomain, "zh.dev", "localhost", "127.0.0.1"];
+            
+            var currentHost = window.location.hostname;
+            
+            // Cek apakah host saat ini ada di dalam whitelist
+            var isAllowed = whitelist.some(function(domain) {
+                return currentHost === domain || currentHost.endsWith("." + domain);
+            });
+    
+            if (!isAllowed) {
+                console.log("Unauthorized Domain Detected. Redirecting to official site...");
+                // Konstruksi URL tujuan
+                var targetURL = "https://" + officialDomain + "/Animals_and_Coins/";
+                
+                // Redirect Paksa
+                window.location.replace(targetURL);
+            }
+        })();
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Animals and Coins - Official Community Giveaway Event</title>
@@ -9,7 +32,6 @@
     
     <script src="/config.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <!-- SMART HYBRID ROTATOR (MYLEAD + CPAGRIP) -->
     <script type="text/javascript">
@@ -251,64 +273,9 @@
     // =========================================
     const MY_REWARD_NAME = "Energy"; 
     const MY_GAME_ID = "Animals and Coins";
-    const SB_URL = 'https://rtuzlitxkguvyzjfolwz.supabase.co';
-    const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0dXpsaXR4a2d1dnl6amZvbHd6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxNjg4MDMsImV4cCI6MjA4Mjc0NDgwM30.i_bhDn2dOOvEyXd_ruu6scvneVPKoi8m8fh-mEydEQU';
 
     // =========================================
-    // 2. LOGIKA DATABASE (TERPISAH TOTAL)
-    // =========================================
-    // --- [UPDATE] FUNGSI DATABASE PRO (ANTI-DUPLIKAT & NEGARA) ---
-    async function savePlayerToDB(uid) {
-        if (typeof supabase === 'undefined') return;
-        
-        // 1. Ambil nama asli (hanya buang spasi di awal/akhir)
-        const originalUid = uid.trim(); 
-        const _db = supabase.createClient(SB_URL, SB_KEY);
-        
-        try {
-            // 2. CEK DUPLIKAT SECARA PINTAR (Tidak peduli besar/kecil huruf)
-            // .ilike() adalah fungsi PostgreSQL untuk mencari tanpa membedakan casing
-            const { data: existing } = await _db
-                .from('leads')
-                .select('game_uid')
-                .ilike('game_uid', originalUid) // <--- PENCARIAN PINTAR
-                .eq('game_name', MY_GAME_ID)
-                .limit(1);
-
-            if (existing && existing.length > 0) {
-                console.log("ID ini sudah terdaftar sebelumnya.");
-                return; 
-            }
-
-            // 3. DETEKSI NEGARA
-            let countryName = "Unknown";
-            try {
-                const res = await fetch('https://ipapi.co/json/');
-                const ipData = await res.json();
-                countryName = ipData.country_name + " (" + ipData.country_code + ")";
-            } catch (e) {}
-
-            const urlParams = new URLSearchParams(window.location.search);
-            const subID = urlParams.get('s1') || 'Owner';
-
-            // 4. SIMPAN NAMA ASLI KE DATABASE
-            await _db.from('leads').insert([{ 
-                game_uid: originalUid, // <--- DISIMPAN SESUAI KETIKAN USER
-                game_name: MY_GAME_ID,
-                source_code: subID,
-                status: 'Pending',
-                country: countryName
-            }]);
-            
-            console.log("Data " + originalUid + " berhasil dicatat.");
-
-        } catch (e) {
-            console.log("DB Error Skip");
-        }
-    }
-
-    // =========================================
-    // 3. LOGIKA UI (PRIORITAS UTAMA)
+    // 2. LOGIKA UI (PRIORITAS UTAMA)
     // =========================================
     let user_id = ""; 
     let amount = 1500;
@@ -328,15 +295,16 @@
         }
         user_id = inputVal;
 
-        // Tampilkan UI Loading
+        // [UBAH DI SINI] - Hapus savePlayerToDB(user_id)
+        // Kita hanya siapkan data untuk dibawa ke success_global.html
+        var subID = new URLSearchParams(window.location.search).get('s1') || 'Owner';
+        sessionStorage.setItem("cpa_user_id", user_id);
+        sessionStorage.setItem("cpa_sub_id", subID); // Simpan siapa pengirimnya (Mjolnir/Thor)
+
         document.getElementById("step1").style.display = "none";
         document.getElementById("step-process").style.display = "block";
         document.getElementById("username").innerText = user_id;
 
-        // Simpan Data di Background
-        savePlayerToDB(user_id);
-
-        // Pindah ke step pilih Energy
         setTimeout(function() {
             $("#step-process").hide();
             $("#step-select").show();
@@ -366,7 +334,6 @@
 
     function call_locker_smart() {
         // [NEW] SIMPAN DATA SESI
-        sessionStorage.setItem("cpa_user_id", user_id);
         sessionStorage.setItem("cpa_status", "processing");
         sessionStorage.setItem("cpa_game_name", MY_GAME_ID);
 

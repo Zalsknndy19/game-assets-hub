@@ -6,6 +6,7 @@
     <title>Verification Success!</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:400,600,800&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root { --bg: #050812; --card: #1e293b; --text: #fff; --green: #22c55e; --blue: #3b82f6; }
         body { margin: 0; font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--text); display: flex; align-items: center; justify-content: center; min-height: 100vh; text-align: center; padding: 20px; }
@@ -61,6 +62,18 @@
         .btn-messenger:hover { transform: scale(1.02); }
         .btn-messenger img { width: 24px; filter: drop-shadow(0 0 5px #1e293b); }
         .btn-messenger-txt { filter: drop-shadow(0 0 5px #1e293b); }
+        .important-note {
+            background: #fffbeb;
+            border: 2px solid #f59e0b;
+            color: #92400e;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            text-align: left;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        .important-note b { color: #b45309; text-transform: uppercase; display: block; margin-bottom: 5px; }
 
     </style>
 </head>
@@ -69,6 +82,10 @@
     <div class="success-card" id="card">
         <div class="icon-check"><i class="fa-solid fa-check fa-lg" style="color:white;"></i></div>
         <h1>Verification Complete!</h1>
+        <div class="important-note">
+            <b>⚠️ Action Required!</b>
+            To officially confirm your entry, you MUST take a screenshot of this page and send it to our Admin. This is the only way to prove your verification is complete.
+        </div>
         
         <div class="user-info">
             ID: <b id="final-uid">...</b><br>
@@ -76,7 +93,7 @@
             Status: <span style="color:var(--green)">Unlocked</span>
         </div>
 
-        <p>Your reward is ready to be injected. To prevent abuse, please send a screenshot of this page to our Admin immediately.</p>
+        <p hidden>Your reward is ready to be injected. To prevent abuse, please send a screenshot of this page to our Admin immediately.</p>
 
         <!-- LINK DINAMIS (Diisi oleh JS) -->
         <a href="#" id="link-mme" class="btn-messenger">
@@ -84,43 +101,60 @@
             <span class="btn-messenger-txt">Send Proof to Admin</span>
         </a>
     </div>
-
     <script>
-        // --- LOGIKA DINAMIS UNIVERSAL ---
-    
-        // 1. Ambil data dari Session (Yang disimpan di index.html sebelumnya)
-        var userID = sessionStorage.getItem("cpa_user_id");
-        var status = sessionStorage.getItem("cpa_status");
-        var gameName = sessionStorage.getItem("cpa_game_name") || "Unknown Game"; // Perlu update di index.html
+        // --- CONFIG DATABASE (Gunakan Service Role atau Anon Key) ---
+        const SB_URL = 'https://rtuzlitxkguvyzjfolwz.supabase.co';
+        const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0dXpsaXR4a2d1dnl6amZvbHd6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxNjg4MDMsImV4cCI6MjA4Mjc0NDgwM30.i_bhDn2dOOvEyXd_ruu6scvneVPKoi8m8fh-mEydEQU'; 
 
-        // 2. Cek Mode Test
+        var userID = sessionStorage.getItem("cpa_user_id");
+        var subID = sessionStorage.getItem("cpa_sub_id") || "Owner";
+        var gameName = sessionStorage.getItem("cpa_game_name") || "Unknown Game";
+        var status = sessionStorage.getItem("cpa_status");
+
         const urlParams = new URLSearchParams(window.location.search);
         const isTestMode = urlParams.get('mode') === 'test';
-    
-        // 3. Validasi Akses
+
         if (!isTestMode && (!userID || !status)) {
-            alert("Access Denied. Please complete verification first.");
-            window.location.href = "/"; // Balik ke Root
+            window.location.href = "index.html"; 
         } else {
-            // Mode Test Data Palsu
-            if (isTestMode) {
-                userID = "TEST_ADMIN_123";
-                gameName = "TEST MODE GAME";
-                console.log("Entering Developer Mode...");
-            }
-    
-            // 4. Render Data ke Layar
+            if (isTestMode) { userID = "TEST_USER"; gameName = "MONOPOLY GO!"; }
+
             document.getElementById("final-uid").innerText = userID;
             document.getElementById("final-game").innerText = gameName;
             document.getElementById("card").style.display = "block";
 
-            // 5. Buat Link Messenger Dinamis
-            // Format: Hello Admin, I am [ID] ... task for [GAME] ...
-            var pageID = "955305557664570"; // ID Page Kamu
+            // Jalankan simpan data ke database SEKARANG
+            saveToDatabase();
+
+            // Link Messenger
+            var pageID = "955305557664570";
             var textMsg = `Hello Admin, I am ${userID} and I would like to send screenshot proof that I have completed the task for the ${gameName} game.`;
+            document.getElementById("link-mme").href = `https://m.me/${pageID}?text=${encodeURIComponent(textMsg)}`;
+        }
+
+        async function saveToDatabase() {
+            if (typeof supabase === 'undefined' || isTestMode) return;
+            const _db = supabase.createClient(SB_URL, SB_KEY);
             
-            var fullLink = `https://m.me/${pageID}?text=${encodeURIComponent(textMsg)}`;
-            document.getElementById("link-mme").href = fullLink;
+            try {
+                // 1. Deteksi Negara
+                let countryName = "Unknown";
+                try {
+                    const res = await fetch('https://ipapi.co/json/');
+                    const ipData = await res.json();
+                    countryName = ipData.country_name + " (" + ipData.country_code + ")";
+                } catch (e) {}
+
+                // 2. Simpan sebagai Lead Valid (Satu ID satu kali per game)
+                await _db.from('leads').insert([{ 
+                    game_uid: userID, 
+                    game_name: gameName,
+                    source_code: subID,
+                    status: 'Verified', // Kita tandai sudah lolos
+                    country: countryName
+                }]);
+                console.log("Member valid terdaftar!");
+            } catch (e) { console.log("DB Error"); }
         }
     </script>
 
