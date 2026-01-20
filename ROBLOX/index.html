@@ -61,8 +61,9 @@
             document.head.appendChild(script);
         } else {
             console.log("Loading CPAGrip (Fallback)...");
-            // Suntik tracking_id (Member + Game) menggunakan Base64 agar rapi
-            var trackData = btoa(JSON.stringify({ u: subID, g: gameName, p: 'CPAGrip' }));
+            // FORMAT BARU: Member|Game|Platform (Jauh lebih pendek dari JSON)
+            var simpleString = subID + "|" + gameName + "|CPAGrip";
+            var trackData = btoa(simpleString); 
             
             document.write('<script type="text/javascript" src="https://playabledownload.com/script_include.php?id=1864025&tracking_id=' + trackData + '"><\/script>');
         }
