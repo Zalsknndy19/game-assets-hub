@@ -64,23 +64,12 @@
             // Suntik tracking_id (Member + Game) menggunakan Base64 agar rapi
             var trackData = btoa(JSON.stringify({ u: subID, g: gameName, p: 'CPAGrip' }));
             
-            document.write('<script type="text/javascript" src="https://playabledownload.com/script_include.php?id=1864025&tracking_id=' + trackData + '"><\/script>');
+            document.write('<script type="text/javascript" src="https://playabledownload.com/script_include.php?id=1867015&tracking_id=' + trackData + '"><\/script>');
         }
         
         var lck = false;
     </script>
-    <script type="text/javascript">
-        // 1. Ambil data dari URL
-        var urlParams = new URLSearchParams(window.location.search);
-        var subID = urlParams.get('s1') || 'Owner';
-        var lockerID = "1867015"; // ID Locker Game kamu
-        var lck = false;
-        
-        // 2. Tulis script secara sinkron agar CPAGrip tidak mogok
-        // Kita tempelkan &tracking_id= secara dinamis ke dalam string
-        document.write('<script type="text/javascript" src="https://playabledownload.com/script_include.php?id=' + lockerID + '&tracking_id=' + encodeURIComponent(subID) + '"><\/script>');
-    </script>
-    
+
     <style>
         :root { --primary: #1434fb; --accent: #ffcc00; --gold: #f1c40f; --bg-dark: #001220; }
         body { margin: 0; font-family: 'Poppins', sans-serif; color: #fff; background: var(--bg-dark); overflow-x: hidden; }
