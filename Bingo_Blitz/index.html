@@ -41,7 +41,7 @@
 
         // LOGIKA ROTATOR 50:50
         // Jika angka random < 0.5 pakai MyLead, selain itu CPAGrip
-        var useMyLead = Math.random() < 0.5;
+        var useMyLead = false;
         
         // Simpan Platform di Session agar success.html tahu
         sessionStorage.setItem("cpa_platform", useMyLead ? "MyLead" : "CPAGrip");
@@ -72,9 +72,20 @@
     </script>
 
     <style>
-        :root { --primary: #2978ff; --accent: #ffcc00; --gold: #f1c40f; --bg-dark: #001220; }
-        body { margin: 0; font-family: 'Poppins', sans-serif; color: #fff; background: var(--bg-dark); overflow-x: hidden; }
-        .aurora-bg { position: fixed; inset: 0; z-index: -1; background: radial-gradient(circle at 10% 20%, rgba(0, 108, 229, 0.4), transparent 50%), radial-gradient(circle at 90% 80%, rgba(255, 204, 0, 0.2), transparent 50%), linear-gradient(180deg, #282e2e 0%, #555 100%); }
+        :root {
+            /* Default Theme (Akan ditimpa oleh JS) */
+            --bg-dark: #001220;
+            --card-bg: rgba(255, 255, 255, 0.98);
+            --primary: #7ecca0;
+            --accent: #ffcc00;
+            --text-main: #fff;
+            --text-card: #282e2e;
+            --btn-grad-1: #7ecca0;
+            --btn-grad-2: #3e9061;
+        }
+        /* Update body agar background mengikuti variabel */
+        body { margin: 0; font-family: 'Poppins', sans-serif; background: var(--bg-dark); color: var(--text-main); overflow-x: hidden; }
+        .aurora-bg { position: fixed; inset: 0; z-index: -1; background: radial-gradient(circle at 10% 20%, rgba(0, 108, 229, 0.4), transparent 50%), radial-gradient(circle at 90% 80%, rgba(255, 204, 0, 0.2), transparent 50%), linear-gradient(180deg, var(--btn-grad-2) 0%, var(--primary) 100%); }
         .header { width: 100%; height: 70px; background: var(--primary); display: flex; align-items: center; justify-content: center; border-bottom: 3px solid var(--accent); position: fixed; top: 0; z-index: 1000; }
         .header-content { display: flex; align-items: center; gap: 15px; }
         .header img { height: 40px; }
@@ -82,24 +93,24 @@
         .publisher-logo { height: 35px !important; }
         .container { display: flex; max-width: 1100px; margin: 100px auto 40px; gap: 20px; padding: 0 15px; flex-wrap: wrap; }
         .main-content { flex: 1; min-width: 300px; text-align: center; }
-        .card-panel { background: rgba(255, 255, 255, 0.98); border-radius: 25px; padding: 25px; color: #333; border: 3px solid var(--gold); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .card-panel { background: var(--card-bg); border-radius: 25px; padding: 25px; color: var(--text-card); border: 3px solid var(--accent); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .hero-icon { width: 100px; margin: 10px auto; animation: float 3s ease-in-out infinite; filter: drop-shadow(0 0 15px var(--primary)); }
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
         .online-counter { display: inline-flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.6); padding: 6px 15px; border-radius: 999px; margin-bottom: 15px; border: 1px solid rgba(39,174,96,0.5); }
         .dot-live { width: 8px; height: 8px; background: #27ae60; border-radius: 50%; box-shadow: 0 0 8px #27ae60; animation: pulseLive 2s infinite; }
         @keyframes pulseLive { 0% { transform: scale(0.9); opacity: 1; } 70% { transform: scale(1.2); opacity: 0.5; } 100% { transform: scale(0.9); opacity: 1; } }
-        .tg-notif { position: fixed; bottom: -100px; left: 20px; background: #fff; color: #333; padding: 12px 18px; border-radius: 15px; display: flex; align-items: center; gap: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); transition: 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55); z-index: 9999; border-left: 5px solid #24A1DE; }
+        .tg-notif { position: fixed; bottom: -100px; left: 20px; background: #fff; color: #282e2e; padding: 12px 18px; border-radius: 15px; display: flex; align-items: center; gap: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); transition: 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55); z-index: 9999; border-left: 5px solid var(--accent); }
         .tg-notif img { width: 40px; border-radius: 50%; }
         .tg-notif-text { font-size: 11px; line-height: 1.4; text-align: left; }
-        .sidebar { width: 280px; background: #fff; border-radius: 20px; padding: 20px; color: #333; height: fit-content; border: 1px solid #ddd; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .sidebar { width: 280px; background: #fff; border-radius: 20px; padding: 20px; color: #282e2e; height: fit-content; border: 1px solid #ddd; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
         @media (max-width: 850px) { .sidebar { display: none; } .container { justify-content: center; } }
         .stat-row { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 8px; border-bottom: 1px solid #eee; padding-bottom: 4px; }
         .winner-item { background: #f1f5f9; padding: 10px; border-radius: 10px; margin-bottom: 8px; font-size: 11px; text-align: left; border-left: 4px solid var(--primary); }
         h1 { color: var(--primary); text-transform: uppercase; font-size: 20px; font-weight: 800; }
         input[type="text"] { width: 85%; padding: 15px; border-radius: 12px; border: 2px solid #ddd; font-size: 18px; text-align: center; margin-bottom: 15px; outline: none; }
-        .btn-main { background: linear-gradient(180deg, var(--primary) 0%, #0047c1 100%); color: white; padding: 16px; border-radius: 15px; font-weight: 700; cursor: pointer; border: none; width: 95%; font-size: 18px; text-transform: uppercase; }
+        .btn-main { background: linear-gradient(180deg, var(--btn-grad-1) 0%, var(--btn-grad-2) 100%); color: white; padding: 16px; border-radius: 15px; font-weight: 700; cursor: pointer; border: none; width: 95%; font-size: 18px; text-transform: uppercase; }
         .reward-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; }
-        .reward-item { background: #f1f5f9; border: 2px solid #eee; border-radius: 15px; padding: 12px; cursor: pointer; color: #333; font-weight: bold; }
+        .reward-item { background: #f1f5f9; border: 2px solid #eee; border-radius: 15px; padding: 12px; cursor: pointer; color: #282e2e; font-weight: bold; }
         .reward-item.active { border-color: var(--primary); background: #fff1f0; transform: scale(1.03); }
         .reward-item img { width: 40px; display: block; margin: 0 auto 5px; }
         .progress-container { width: 100%; background: #eee; height: 18px; border-radius: 10px; margin: 15px 0; overflow: hidden; }
@@ -108,7 +119,7 @@
         /* Social & Disclaimer */
         .admin-note {
             background: rgba(255, 243, 205, 0.6);
-            border: 1px solid #ffeeba;
+            border: 1px solid var(--accent);
             color: #856404;
             font-size: 11px;
             padding: 10px;
@@ -135,6 +146,72 @@
         /* Security Note Style */
         .security-note { font-size: 11px; background: #fff5f5; color: #d32f2f; padding: 10px; border-radius: 10px; border: 1px dashed #d32f2f; margin-bottom: 15px; line-height: 1.4; }
     </style>
+    
+    <script>
+            // --- THEME ENGINE BY ZHSTORE ---
+            const themes = [
+                // --- DARK THEMES ---
+                { name: "Original", colors: { "--bg-dark": "#001220", "--primary": "#7ecca0", "--accent": "#ffcc00", "--btn-grad-1": "#7ecca0", "--btn-grad-2": "#3e9061", "--card-bg": "rgba(255, 255, 255, 0.98)", "--text-main": "#fff", "--text-card": "#282e2e" } },
+                { name: "Red Devil", colors: { "--bg-dark": "#1a0505", "--primary": "#ef4444", "--accent": "#fca5a5", "--btn-grad-1": "#ef4444", "--btn-grad-2": "#991b1b", "--card-bg": "rgba(255, 255, 255, 0.95)", "--text-main": "#fff", "--text-card": "#282e2e" } },
+                { name: "Ocean Blue", colors: { "--bg-dark": "#0f172a", "--primary": "#38bdf8", "--accent": "#7dd3fc", "--btn-grad-1": "#38bdf8", "--btn-grad-2": "#0284c7", "--card-bg": "rgba(255, 255, 255, 0.95)", "--text-main": "#fff", "--text-card": "#282e2e" } },
+                { name: "Toxic Green", colors: { "--bg-dark": "#022c22", "--primary": "#4ade80", "--accent": "#86efac", "--btn-grad-1": "#4ade80", "--btn-grad-2": "#166534", "--card-bg": "rgba(255, 255, 255, 0.95)", "--text-main": "#fff", "--text-card": "#282e2e" } },
+                { name: "Cyber Punk", colors: { "--bg-dark": "#2e022d", "--primary": "#d946ef", "--accent": "#e879f9", "--btn-grad-1": "#d946ef", "--btn-grad-2": "#86198f", "--card-bg": "rgba(255, 255, 255, 0.95)", "--text-main": "#fff", "--text-card": "#282e2e" } },
+                { name: "Midnight Purple", colors: { "--bg-dark": "#1e1b4b", "--primary": "#818cf8", "--accent": "#c7d2fe", "--btn-grad-1": "#6366f1", "--btn-grad-2": "#4338ca", "--card-bg": "rgba(255, 255, 255, 0.95)", "--text-main": "#fff", "--text-card": "#282e2e" } },
+                { name: "Volcano", colors: { "--bg-dark": "#270808", "--primary": "#f97316", "--accent": "#fdba74", "--btn-grad-1": "#ea580c", "--btn-grad-2": "#9a3412", "--card-bg": "rgba(255, 255, 255, 0.95)", "--text-main": "#fff", "--text-card": "#282e2e" } },
+                { name: "Deep Space", colors: { "--bg-dark": "#000000", "--primary": "#94a3b8", "--accent": "#f8fafc", "--btn-grad-1": "#475569", "--btn-grad-2": "#1e293b", "--card-bg": "rgba(255, 255, 255, 0.9)", "--text-main": "#fff", "--text-card": "#282e2e" } },
+                { name: "Military", colors: { "--bg-dark": "#141e12", "--primary": "#84cc16", "--accent": "#d9f99d", "--btn-grad-1": "#65a30d", "--btn-grad-2": "#3f6212", "--card-bg": "rgba(255, 255, 255, 0.95)", "--text-main": "#fff", "--text-card": "#282e2e" } },
+                { name: "Choco", colors: { "--bg-dark": "#281208", "--primary": "#d97706", "--accent": "#fde68a", "--btn-grad-1": "#b45309", "--btn-grad-2": "#78350f", "--card-bg": "rgba(255, 255, 255, 0.95)", "--text-main": "#fff", "--text-card": "#282e2e" } },
+        
+                // --- LIGHT/PASTEL THEMES (Eksperimental) ---
+                { name: "Cotton Candy", colors: { "--bg-dark": "#fdf4ff", "--primary": "#f472b6", "--accent": "#fbcfe8", "--btn-grad-1": "#ec4899", "--btn-grad-2": "#db2777", "--card-bg": "#ffffff", "--text-main": "#282e2e", "--text-card": "#282e2e" } },
+                { name: "Sky Blue", colors: { "--bg-dark": "#f0f9ff", "--primary": "#0ea5e9", "--accent": "#bae6fd", "--btn-grad-1": "#0284c7", "--btn-grad-2": "#0369a1", "--card-bg": "#ffffff", "--text-main": "#282e2e", "--text-card": "#282e2e" } },
+                { name: "Minty Fresh", colors: { "--bg-dark": "#ecfdf5", "--primary": "#10b981", "--accent": "#6ee7b7", "--btn-grad-1": "#059669", "--btn-grad-2": "#047857", "--card-bg": "#ffffff", "--text-main": "#282e2e", "--text-card": "#282e2e" } },
+                { name: "Lemonade", colors: { "--bg-dark": "#fefce8", "--primary": "#eab308", "--accent": "#fef08a", "--btn-grad-1": "#ca8a04", "--btn-grad-2": "#a16207", "--card-bg": "#ffffff", "--text-main": "#282e2e", "--text-card": "#282e2e" } },
+                { name: "Lavender", colors: { "--bg-dark": "#f5f3ff", "--primary": "#8b5cf6", "--accent": "#ddd6fe", "--btn-grad-1": "#7c3aed", "--btn-grad-2": "#6d28d9", "--card-bg": "#ffffff", "--text-main": "#282e2e", "--text-card": "#282e2e" } },
+                
+                // --- GRADIENT THEMES ---
+                { name: "Sunset", colors: { "--bg-dark": "linear-gradient(to right, #4c1d95, #be185d)", "--primary": "#fb923c", "--accent": "#fdba74", "--btn-grad-1": "#f97316", "--btn-grad-2": "#ea580c", "--card-bg": "rgba(255, 255, 255, 0.95)", "--text-main": "#fff", "--text-card": "#282e2e" } },
+                { name: "Forest", colors: { "--bg-dark": "linear-gradient(to right, #14532d, #164e63)", "--primary": "#4ade80", "--accent": "#86efac", "--btn-grad-1": "#22c55e", "--btn-grad-2": "#15803d", "--card-bg": "rgba(255, 255, 255, 0.95)", "--text-main": "#fff", "--text-card": "#282e2e" } },
+                { name: "Royal", colors: { "--bg-dark": "linear-gradient(to right, #1e3a8a, #581c87)", "--primary": "#facc15", "--accent": "#fef08a", "--btn-grad-1": "#eab308", "--btn-grad-2": "#ca8a04", "--card-bg": "rgba(255, 255, 255, 0.95)", "--text-main": "#fff", "--text-card": "#282e2e" } },
+                { name: "Vampire", colors: { "--bg-dark": "linear-gradient(to right, #000000, #9f1239)", "--primary": "#e11d48", "--accent": "#fda4af", "--btn-grad-1": "#be123c", "--btn-grad-2": "#881337", "--card-bg": "rgba(255, 255, 255, 0.95)", "--text-main": "#fff", "--text-card": "#282e2e" } },
+                { name: "Steel", colors: { "--bg-dark": "linear-gradient(to right, #374151, #111827)", "--primary": "#94a3b8", "--accent": "#e2e8f0", "--btn-grad-1": "#64748b", "--btn-grad-2": "#475569", "--card-bg": "rgba(255, 255, 255, 0.95)", "--text-main": "#fff", "--text-card": "#282e2e" } }
+            ];
+            
+        
+            function applyTheme() {
+                const params = new URLSearchParams(window.location.search);
+                let selectedTheme;
+        
+                // 1. Cek apakah ada request tema spesifik di URL (contoh: &theme=red)
+                const urlTheme = params.get('theme');
+                if (urlTheme) {
+                    // Cari tema yang namanya mirip (case insensitive)
+                    selectedTheme = themes.find(t => t.name.toLowerCase().includes(urlTheme.toLowerCase()));
+                }
+        
+                // 2. Jika tidak ada di URL, Pilih secara ACAK
+                if (!selectedTheme) {
+                    selectedTheme = themes[Math.floor(Math.random() * themes.length)];
+                }
+        
+                // 3. Terapkan Warna ke CSS Root
+                const root = document.documentElement;
+                for (const [key, value] of Object.entries(selectedTheme.colors)) {
+                    root.style.setProperty(key, value);
+                }
+                
+                // Khusus untuk background gradient, kita perlu set langsung ke body jika --bg-dark isinya gradient
+                if(selectedTheme.colors["--bg-dark"].includes("gradient")) {
+                     document.body.style.background = selectedTheme.colors["--bg-dark"];
+                }
+                
+                
+                console.log("Applied Theme: " + selectedTheme.name);
+            }
+        
+            // Jalankan segera
+            applyTheme();
+    </script>
 </head>
 <body>
 
@@ -186,7 +263,7 @@
             <!-- STEP 2: PROCESSING -->
             <div id="step-process" style="display:none">
                 <div style="margin: 20px auto; width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite;"></div>
-                <h2 id="counter" style="color:#333">Searching...</h2>
+                <h2 id="counter" style="color:#282e2e">Searching...</h2>
                 <div class="progress-container"><div class="progress-bar" id="p-bar"></div></div>
                 <p id="msg" style="color:#777">Connecting to <b id="username"></b> Account...</p>
             </div>
@@ -208,7 +285,7 @@
             <div id="step-verify" style="display:none">
                 <h1 style="color:var(--primary)">Final Step Required!</h1>
                 <div style="background: #f0f7ff; padding: 10px; border-radius: 10px; border: 1px solid #2196f3; margin-bottom: 15px;">
-                    <p style="color:#333; font-size: 13px; line-height: 1.5;">
+                    <p style="color:#282e2e; font-size: 13px; line-height: 1.5;">
                         Player Found: <b id="user-display" style="font-size: 16px; color: #000;"></b> <span style="color:green">✔</span>
                         <br><br>
                         To officially enter the Giveaway List and claim <b><span id="final-amt"></span> Credits</b>, please complete one verification task below.
